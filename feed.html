@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>4sale.love — Google Shopping Feed Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#7c3aed;--g:#16a34a;--g2:#4ade80;--ink:#1a0a2e;--bg:#f7f4ff;--w:#fff;--rule:#ddd4f8;--muted:#7c5abf;--rb:linear-gradient(90deg,#ff4d4d,#ff9a00,#ffe600,#4ade80,#38bdf8,#818cf8,#e879f9)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);padding:24px;max-width:900px;margin:0 auto}
+h1{font-size:22px;font-weight:800;margin-bottom:6px}
+.sub{color:var(--muted);font-size:13px;font-weight:700;margin-bottom:24px}
+.rl{height:3px;background:var(--rb);border-radius:2px;margin-bottom:24px}
+.card{background:var(--w);border:2px solid var(--rule);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{font-size:16px;font-weight:800;margin-bottom:12px}
+h3{font-size:13px;font-weight:800;margin-bottom:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.step{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;margin-top:1px}
+.step-body{flex:1}
+.step-title{font-size:14px;font-weight:800;margin-bottom:3px}
+.step-desc{font-size:12px;color:var(--muted);font-weight:600;line-height:1.6}
+.code{background:#0f0520;border:2px solid #3d1f70;border-radius:10px;padding:14px;font-family:monospace;font-size:11px;color:#a5b4fc;white-space:pre-wrap;word-break:break-all;position:relative;margin:8px 0}
+.copy-btn{position:absolute;top:8px;right:8px;background:#240f48;border:1px solid #4338ca;border-radius:6px;color:#a5b4fc;font-size:10px;padding:4px 10px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:20px;border:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .15s}
+.btn-p{background:linear-gradient(135deg,var(--p),var(--g));color:#fff;box-shadow:0 3px 12px rgba(124,58,237,.3)}
+.btn-g{background:linear-gradient(135deg,var(--g),#15803d);color:#fff}
+.btn-ghost{background:var(--bg);border:2px solid var(--rule);color:var(--muted)}
+.feed-preview{background:#f0fff4;border:2px solid #bbf7d0;border-radius:10px;padding:14px;margin-top:12px;font-family:monospace;font-size:11px;color:#166534;white-space:pre;overflow-x:auto;max-height:320px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;border:1.5px solid}
+.bg{background:rgba(74,222,128,.12);border-color:var(--g2);color:var(--g)}
+.bp{background:rgba(168,85,247,.12);border-color:#a855f7;color:var(--p)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+input,select,textarea{background:var(--bg);border:2px solid var(--rule);border-radius:8px;padding:8px 12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--ink);outline:none;width:100%}
+input:focus,select:focus{border-color:var(--p)}
+.schema-out{background:#0a1f12;border:2px solid #14532d;border-radius:10px;padding:14px;font-family:monospace;font-size:11px;color:#4ade80;white-space:pre;overflow-x:auto;max-height:280px;margin-top:10px}
+.stat{background:var(--w);border:2px solid var(--rule);border-radius:10px;padding:12px 16px;text-align:center}
+.stat-n{font-size:24px;font-weight:800;color:var(--p)}
+.stat-l{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.trow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--rule);font-size:12px}
+.trow:last-child{border:none}
+.sw{width:36px;height:20px;background:var(--rule);border-radius:20px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.sw.on{background:var(--g)}
+.sw::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.sw.on::after{left:18px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);border:2px solid var(--g2);border-radius:10px;padding:10px 16px;color:var(--g2);font-size:13px;font-weight:800;opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<h1>🛍️ Google Shopping + SEO Automation</h1>
+<p class="sub">Auto-generate product feeds, structured data, and sitemaps from your 4sale.love listings</p>
+<div class="rl"></div>
+
+<div class="g3">
+  <div class="stat"><div class="stat-n" id="s-listings">5</div><div class="stat-l">Listings in Feed</div></div>
+  <div class="stat"><div class="stat-n" style="color:var(--g)" id="s-indexed">0</div><div class="stat-l">Google Indexed</div></div>
+  <div class="stat"><div class="stat-n" style="color:#f59e0b" id="s-impressions">—</div><div class="stat-l">Impressions (30d)</div></div>
+</div>
+
+<!-- ── STEP 1: Store Info ─────────────────────────────────────────────── -->
+<div class="card">
+  <h2>Step 1 — Your Store Info</h2>
+  <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">Used in every feed entry, schema tag, and sitemap</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="field"><label>Store Name</label><input id="store-name" value="Omar's Hi-Style Furniture"></div>
+    <div class="field"><label>Domain</label><input id="store-domain" value="4sale.love/omar"></div>
+    <div class="field"><label>City</label><input id="store-city" value="Chicago, IL"></div>
+    <div class="field"><label>Currency</label><select id="store-currency"><option value="USD" selected>USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option></select></div>
+    <div class="field"><label>Google Merchant ID (optional)</label><input id="merchant-id" placeholder="123456789"></div>
+    <div class="field"><label>Google Analytics ID (optional)</label><input id="ga-id" placeholder="G-XXXXXXXXXX"></div>
+  </div>
+  <div class="trow"><div><div style="font-weight:700">Auto-submit to Google Merchant Center</div><div style="font-size:11px;color:var(--muted)">Requires Merchant ID above</div></div><div class="sw on" onclick="this.classList.toggle('on')" id="auto-submit"></div></div>
+  <div class="trow"><div><div style="font-weight:700">Refresh feed on every new listing</div><div style="font-size:11px;color:var(--muted)">Feed URL updates automatically</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+  <div class="trow"><div><div style="font-weight:700">Include sold items</div><div style="font-size:11px;color:var(--muted)">Listed as "out of stock" — keeps SEO history</div></div><div class="sw" onclick="this.classList.toggle('on')"></div></div>
+</div>
+
+<!-- ── STEP 2: Generate Feed ─────────────────────────────────────────── -->
+<div class="card">
+  <h2>Step 2 — Generate Google Shopping Feed</h2>
+  <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">Google Merchant Center reads this RSS/XML file. It pulls product title, price, image, condition, and availability automatically.</p>
+
+  <div class="row" style="margin-bottom:14px">
+    <button class="btn btn-p" onclick="generateFeed()">⚡ Generate Feed XML</button>
+    <button class="btn btn-ghost" onclick="downloadFeed()">⬇ Download feed.xml</button>
+    <button class="btn btn-ghost" onclick="copyFeedURL()">🔗 Copy Feed URL</button>
+  </div>
+
+  <div id="feed-output" style="display:none">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span class="badge bg">✓ Feed generated</span>
+      <span style="font-size:11px;color:var(--muted);font-weight:700" id="feed-item-count"></span>
+    </div>
+    <div class="feed-preview" id="feed-xml"></div>
+    <div style="margin-top:10px;padding:10px 14px;background:#f0eaff;border-radius:8px">
+      <div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:4px">📌 Submit this URL to Google Merchant Center:</div>
+      <div style="font-family:monospace;font-size:12px;color:var(--p);font-weight:700" id="feed-url-display"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STEP 3: SEO Schema ─────────────────────────────────────────────── -->
+<div class="card">
+  <h2>Step 3 — Auto-Generated SEO Schema</h2>
+  <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">This JSON-LD is injected into every listing page automatically. Google reads it for rich results — showing price, condition, and availability directly in search.</p>
+
+  <div class="field"><label>Preview schema for listing</label>
+    <select id="schema-listing-select" onchange="previewSchema()">
+      <option value="0">Sony WH-1000XM5 Headphones — $220</option>
+      <option value="1">Apple iPad Air 5th Gen — $380</option>
+      <option value="2">IKEA MALM Dresser — $85</option>
+      <option value="3">Vitamix E310 Blender — $175</option>
+      <option value="4">Wicker Park Event Space — $450</option>
+    </select>
+  </div>
+
+  <button class="btn btn-g btn-sm" onclick="previewSchema()" style="margin-bottom:10px">Preview JSON-LD Schema →</button>
+  <div class="schema-out" id="schema-out" style="display:none"></div>
+
+  <div style="margin-top:14px;padding:12px 14px;background:#f0fff4;border:1.5px solid #bbf7d0;border-radius:10px">
+    <div style="font-size:12px;font-weight:800;color:var(--g);margin-bottom:6px">✅ What this gets you in Google Search:</div>
+    <div style="font-size:12px;color:#166534;font-weight:600;line-height:1.7">
+      • Price shown directly in search results<br>
+      • Condition badge (Used / Like New / New)<br>
+      • Availability indicator (In Stock / Out of Stock)<br>
+      • Star ratings if you have reviews<br>
+      • Rich snippet with your store name and location
+    </div>
+  </div>
+</div>
+
+<!-- ── STEP 4: Sitemap ────────────────────────────────────────────────── -->
+<div class="card">
+  <h2>Step 4 — Sitemap.xml</h2>
+  <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">Tells Google every listing URL to index. Regenerates automatically when you add a listing.</p>
+
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn btn-p" onclick="generateSitemap()">⚡ Generate Sitemap</button>
+    <button class="btn btn-ghost" onclick="downloadSitemap()">⬇ Download sitemap.xml</button>
+  </div>
+
+  <div id="sitemap-output" style="display:none">
+    <div class="feed-preview" id="sitemap-xml"></div>
+    <div style="margin-top:10px;padding:10px 14px;background:#f0eaff;border-radius:8px">
+      <div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:4px">📌 Submit to Google Search Console:</div>
+      <a href="https://search.google.com/search-console" target="_blank" style="font-size:12px;color:var(--p);font-weight:700">search.google.com/search-console →</a>
+      <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px">Sitemaps → Add sitemap → paste your URL → Submit</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STEP 5: Local SEO ──────────────────────────────────────────────── -->
+<div class="card">
+  <h2>Step 5 — Local Business SEO (Furniture Store)</h2>
+  <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">Adds LocalBusiness schema to your storefront. Critical for "furniture store near me" searches in Chicago.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+    <div class="field"><label>Business Type</label>
+      <select id="biz-type">
+        <option value="FurnitureStore" selected>Furniture Store</option>
+        <option value="HomeGoodsStore">Home Goods Store</option>
+        <option value="Store">General Store</option>
+        <option value="OnlineStore">Online Store</option>
+      </select>
+    </div>
+    <div class="field"><label>Phone</label><input id="biz-phone" placeholder="+1 312 555 0100"></div>
+    <div class="field"><label>Street Address</label><input id="biz-address" placeholder="1234 N Milwaukee Ave"></div>
+    <div class="field"><label>Neighborhood</label><input id="biz-neighborhood" value="Wicker Park"></div>
+    <div class="field"><label>Hours</label><input id="biz-hours" placeholder="Mon-Sat 10am-7pm"></div>
+    <div class="field"><label>Price Range</label>
+      <select id="biz-price">
+        <option value="$">$ Budget</option>
+        <option value="$$" selected>$$ Mid-range</option>
+        <option value="$$$">$$$ High-end</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn btn-g" onclick="generateLocalSchema()">⚡ Generate Local Business Schema</button>
+  <div class="schema-out" id="local-schema-out" style="display:none;margin-top:10px"></div>
+</div>
+
+<!-- ── STEP 6: How to submit ──────────────────────────────────────────── -->
+<div class="card">
+  <h2>Step 6 — Submit to Google (one-time setup)</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">Create Google Merchant Center account</div>
+      <div class="step-desc">Go to <a href="https://merchants.google.com" target="_blank" style="color:var(--p)">merchants.google.com</a> → Create account → Verify your domain. Free. Takes 10 minutes.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">Add your feed URL</div>
+      <div class="step-desc">In Merchant Center: Products → Feeds → Add feed → Scheduled fetch → Enter your feed URL. Google will crawl it every 24 hours automatically.</div>
+      <div class="code" style="margin-top:8px">https://4sale.love/feed.xml<button class="copy-btn" onclick="cp('https://4sale.love/feed.xml')">Copy</button></div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">Submit sitemap to Search Console</div>
+      <div class="step-desc">Go to <a href="https://search.google.com/search-console" target="_blank" style="color:var(--p)">search.google.com/search-console</a> → Add property (your domain) → Sitemaps → Submit sitemap URL.</div>
+      <div class="code" style="margin-top:8px">https://4sale.love/sitemap.xml<button class="copy-btn" onclick="cp('https://4sale.love/sitemap.xml')">Copy</button></div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">Wait 24–48 hours</div>
+      <div class="step-desc">Google indexes your listings. Your furniture items start appearing in Google Shopping results and organic search. Each new listing you add through Push auto-appears within 24 hours.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">Enable free listings in Merchant Center</div>
+      <div class="step-desc">In Merchant Center → Growth → Manage programs → Free listings → Enable. Your items appear in Google Shopping for free. Paid Shopping ads are optional on top.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── LISTINGS DATA (same as admin app) ─────────────────────────────────────
+const LISTINGS = [
+  {id:1, em:'🎧', title:'Sony WH-1000XM5 Noise Cancelling Headphones', price:220, cond:'Like New', cat:'electronics', slug:'sony-xm5-k7m2', desc:'Lightly used 3 months. All accessories included: case, USB-C cable, 3.5mm adapter. Battery holds 30hrs.', brand:'Sony', mpn:'WH-1000XM5', gtin:'', available:true},
+  {id:2, em:'📱', title:'Apple iPad Air 5th Gen 64GB + Apple Pencil 2nd Gen', price:380, cond:'Good', cat:'electronics', slug:'ipad-air-p4n1', desc:'Battery health 91%. Screen protector since day one. Includes Pencil 2nd gen and Smart Folio.', brand:'Apple', mpn:'MMMQ3LL/A', gtin:'', available:true},
+  {id:3, em:'🛋️', title:'IKEA MALM 6-Drawer Dresser White', price:85, cond:'Good', cat:'furniture', slug:'malm-q2p9', desc:'Moving sale. Solid condition, minor scuff on bottom drawer. Easy to disassemble.', brand:'IKEA', mpn:'MALM', gtin:'', available:true},
+  {id:4, em:'🥤', title:'Vitamix E310 Explorian Blender', price:175, cond:'Like New', cat:'appliances', slug:'vitamix-n1k5', desc:'Works perfectly. All original parts. Retails $450 new. Selling for built-in upgrade.', brand:'Vitamix', mpn:'E310', gtin:'', available:true},
+  {id:5, em:'🏠', title:'Wicker Park Event Space Weekend Rental', price:450, cond:'New', cat:'services', slug:'event-space-w3p8', desc:'Stunning Wicker Park space. Capacity 40. Full AV, kitchen access, exposed brick.', brand:'', mpn:'', gtin:'', available:true},
+];
+
+const COND_MAP = {'New':'new','Like New':'used','Good':'used','Fair':'used','Poor':'used'};
+const AVAIL_MAP = {'new':'in_stock','used':'in_stock'};
+
+function getStoreName()   { return document.getElementById('store-name').value || "Omar's Store"; }
+function getDomain()      { return document.getElementById('store-domain').value || '4sale.love/omar'; }
+function getCurrency()    { return document.getElementById('store-currency').value || 'USD'; }
+
+// ── GOOGLE SHOPPING FEED (RSS 2.0 with g: namespace) ──────────────────────
+function generateFeed() {
+  const domain   = getDomain();
+  const name     = getStoreName();
+  const currency = getCurrency();
+  const now      = new Date().toUTCString();
+
+  const items = LISTINGS.filter(l => l.available).map(l => {
+    const condG = COND_MAP[l.cond] || 'used';
+    const imgUrl = `https://${domain}/images/${l.slug}.jpg`; // placeholder — replace with real images
+    return `    <item>
+      <title><![CDATA[${l.title}]]></title>
+      <link>https://${domain}/${l.slug}</link>
+      <description><![CDATA[${l.desc}]]></description>
+      <g:id>${l.slug}</g:id>
+      <g:title><![CDATA[${l.title}]]></g:title>
+      <g:description><![CDATA[${l.desc}]]></g:description>
+      <g:link>https://${domain}/${l.slug}</g:link>
+      <g:image_link>${imgUrl}</g:image_link>
+      <g:price>${l.price.toFixed(2)} ${currency}</g:price>
+      <g:availability>in_stock</g:availability>
+      <g:condition>${condG}</g:condition>
+      <g:brand><![CDATA[${l.brand || name}]]></g:brand>
+      ${l.mpn ? `<g:mpn>${l.mpn}</g:mpn>` : ''}
+      ${l.gtin ? `<g:gtin>${l.gtin}</g:gtin>` : ''}
+      <g:product_type><![CDATA[${l.cat}]]></g:product_type>
+      <g:shipping>
+        <g:country>US</g:country>
+        <g:service>Standard</g:service>
+        <g:price>0.00 USD</g:price>
+      </g:shipping>
+    </item>`;
+  }).join('\n');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title><![CDATA[${name}]]></title>
+    <link>https://${domain}</link>
+    <description><![CDATA[${name} — Quality items, AI-powered marketplace]]></description>
+    <lastBuildDate>${now}</lastBuildDate>
+${items}
+  </channel>
+</rss>`;
+
+  document.getElementById('feed-xml').textContent = xml;
+  document.getElementById('feed-item-count').textContent = `${LISTINGS.filter(l=>l.available).length} products`;
+  document.getElementById('feed-url-display').textContent = `https://${domain.split('/u/')[0]}/feed.xml`;
+  document.getElementById('feed-output').style.display = 'block';
+  document.getElementById('s-listings').textContent = LISTINGS.length;
+  toast('✓ Feed generated — ' + LISTINGS.length + ' products');
+}
+
+function downloadFeed() {
+  const xml = document.getElementById('feed-xml').textContent;
+  if (!xml) { generateFeed(); return; }
+  download('feed.xml', xml, 'application/xml');
+  toast('feed.xml downloaded');
+}
+
+function copyFeedURL() {
+  const domain = getDomain().split('/u/')[0];
+  cp(`https://${domain}/feed.xml`);
+}
+
+// ── PRODUCT JSON-LD SCHEMA ────────────────────────────────────────────────
+function previewSchema() {
+  const idx = parseInt(document.getElementById('schema-listing-select').value);
+  const l   = LISTINGS[idx];
+  const domain = getDomain();
+  const name   = getStoreName();
+  const condMap = {'New':'NewCondition','Like New':'UsedCondition','Good':'UsedCondition','Fair':'UsedCondition','Poor':'DamagedCondition'};
+
+  const schema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": l.title,
+    "description": l.desc,
+    "image": [`https://${domain}/images/${l.slug}.jpg`],
+    "brand": { "@type": "Brand", "name": l.brand || name },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://${domain}/${l.slug}`,
+      "priceCurrency": getCurrency(),
+      "price": l.price,
+      "availability": "https://schema.org/InStock",
+      "itemCondition": `https://schema.org/${condMap[l.cond]||'UsedCondition'}`,
+      "seller": {
+        "@type": "Person",
+        "name": name
+      }
+    }
+  };
+
+  const output = document.getElementById('schema-out');
+  output.textContent = JSON.stringify(schema, null, 2);
+  output.style.display = 'block';
+}
+
+// ── SITEMAP ───────────────────────────────────────────────────────────────
+function generateSitemap() {
+  const domain = getDomain();
+  const today  = new Date().toISOString().split('T')[0];
+
+  const urls = [
+    { loc:`https://${domain}`, priority:'1.0', freq:'daily' },
+    ...LISTINGS.map(l => ({
+      loc:`https://${domain}/${l.slug}`,
+      priority:'0.8',
+      freq:'weekly',
+      lastmod: today
+    }))
+  ];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u=>`  <url>
+    <loc>${u.loc}</loc>
+    <changefreq>${u.freq}</changefreq>
+    <priority>${u.priority}</priority>
+    ${u.lastmod?`<lastmod>${u.lastmod}</lastmod>`:''}
+  </url>`).join('\n')}
+</urlset>`;
+
+  document.getElementById('sitemap-xml').textContent = xml;
+  document.getElementById('sitemap-output').style.display = 'block';
+  toast('✓ Sitemap generated — ' + urls.length + ' URLs');
+}
+
+function downloadSitemap() {
+  const xml = document.getElementById('sitemap-xml').textContent;
+  if (!xml) { generateSitemap(); return; }
+  download('sitemap.xml', xml, 'application/xml');
+  toast('sitemap.xml downloaded');
+}
+
+// ── LOCAL BUSINESS SCHEMA ─────────────────────────────────────────────────
+function generateLocalSchema() {
+  const domain = getDomain();
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": document.getElementById('biz-type').value,
+    "name": getStoreName(),
+    "url": `https://${domain}`,
+    "telephone": document.getElementById('biz-phone').value || undefined,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": document.getElementById('biz-address').value,
+      "addressLocality": document.getElementById('biz-neighborhood').value,
+      "addressRegion": "IL",
+      "addressCountry": "US"
+    },
+    "openingHours": document.getElementById('biz-hours').value || undefined,
+    "priceRange": document.getElementById('biz-price').value,
+    "description": `${getStoreName()} — Quality furniture and home goods in ${document.getElementById('biz-neighborhood').value}, Chicago. AI-powered marketplace with instant offers.`,
+    "sameAs": [
+      `https://${domain}`,
+      "https://www.facebook.com/",
+      "https://nextdoor.com/"
+    ]
+  };
+
+  const out = document.getElementById('local-schema-out');
+  out.textContent = `<!-- Add this to your store's <head> tag -->\n<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</s`+'cript>';
+  out.style.display = 'block';
+  toast('✓ Local business schema generated');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function download(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+function cp(text) {
+  navigator.clipboard.writeText(text).catch(()=>{});
+  toast('Copied: ' + text.slice(0, 40) + (text.length > 40 ? '...' : ''));
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

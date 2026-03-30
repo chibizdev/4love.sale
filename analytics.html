@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4sale.love — Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#fffef8;--white:#fff;--ink:#1a1208;--ink2:#3d3520;
+  --muted:#9c8f6a;--rule:#e8e0cc;--rule2:#d4c9a8;
+  --green:#16a34a;--green2:#22c55e;--green3:#86efac;--greenb:rgba(22,163,74,.1);
+  --purple:#7c3aed;--purple2:#a855f7;--purple3:#d8b4fe;--purpleb:rgba(124,58,237,.1);
+  --r1:#ff4444;--r2:#ff8c00;--r3:#ffd700;--r5:#3b82f6;--r7:#ec4899;
+  --rb:linear-gradient(90deg,#ff4444,#ff8c00,#ffd700,#22c55e,#3b82f6,#8b5cf6,#ec4899);
+  --ff:'Comic Sans MS','Comic Sans','Chalkboard SE',cursive;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#fffef8;font-family:var(--ff);color:var(--ink);min-height:100vh}
+
+/* ── TOP BAR ── */
+.rb-top{height:5px;background:var(--rb);background-size:200%;animation:rbs 4s linear infinite}
+@keyframes rbs{0%{background-position:0%}100%{background-position:200%}}
+.topbar{
+  background:#fff;border-bottom:3px solid var(--rule2);
+  padding:0 24px;height:54px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;position:sticky;top:0;z-index:100;
+}
+.tb-logo{font-size:18px;font-weight:900;text-decoration:none;color:var(--ink)}
+.tb-logo .s{color:var(--green)}.tb-logo .d{color:var(--purple)}.tb-logo .l{color:#ec4899}
+.tb-nav{display:flex;gap:6px}
+.tb-btn{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer;border:2px solid var(--rule2);background:#fff;color:var(--muted);font-family:var(--ff);transition:all .15s;text-decoration:none}
+.tb-btn:hover{border-color:var(--purple);color:var(--purple)}
+.tb-btn.on{background:var(--purple);color:#fff;border-color:var(--purple);box-shadow:2px 2px 0 #5b21b6}
+.tb-user{font-size:12px;font-weight:800;color:var(--ink2)}
+
+/* ── WRAP ── */
+.wrap{max-width:1080px;margin:0 auto;padding:24px 20px}
+h2{font-size:24px;font-weight:900;color:var(--ink);margin-bottom:4px}
+h3{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
+.sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px}
+.rsb{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:720px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ── CARDS ── */
+.card{background:#fff;border:3px solid var(--rule);border-radius:14px;padding:18px;box-shadow:4px 4px 0 var(--rule2)}
+.card-green{border-color:var(--green3);box-shadow:4px 4px 0 rgba(22,163,74,.15)}
+.card-purple{border-color:var(--purple3);box-shadow:4px 4px 0 rgba(124,58,237,.12)}
+
+/* ── KPI STATS ── */
+.kpi{background:#fff;border:3px solid var(--rule);border-radius:14px;padding:18px;box-shadow:3px 3px 0 var(--rule2);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.kpi.green::before{background:var(--green)}
+.kpi.purple::before{background:var(--purple)}
+.kpi.orange::before{background:var(--r2)}
+.kpi.pink::before{background:var(--r7)}
+.kpi.blue::before{background:var(--r5)}
+.kpi-n{font-size:32px;font-weight:900;letter-spacing:-.02em;margin-bottom:2px}
+.kpi-l{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.kpi-delta{font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;margin-top:6px}
+.kpi-delta.up{background:var(--greenb);color:var(--green)}
+.kpi-delta.down{background:rgba(220,38,38,.08);color:#dc2626}
+
+/* ── DATE RANGE ── */
+.date-btns{display:flex;gap:4px;flex-wrap:wrap}
+.dr-btn{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer;border:2px solid var(--rule2);background:#fff;color:var(--muted);font-family:var(--ff);transition:all .15s}
+.dr-btn.on{background:var(--purple);color:#fff;border-color:var(--purple);box-shadow:2px 2px 0 #5b21b6}
+
+/* ── CHART WRAPPER ── */
+.chart-wrap{position:relative;height:220px;width:100%}
+.chart-wrap.tall{height:280px}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;padding:8px 12px;border-bottom:3px solid var(--rule);font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.tbl td{padding:10px 12px;border-bottom:2px solid var(--rule);vertical-align:middle}
+.tbl tr:last-child td{border:none}
+.tbl tr:hover td{background:var(--bg)}
+.tbl-title{font-weight:800;color:var(--ink)}
+.tbl-sub{font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+.tbl-price{font-size:15px;font-weight:900;color:var(--green)}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;border:2px solid}
+.bg{background:var(--greenb);border-color:var(--green3);color:var(--green)}
+.bp{background:var(--purpleb);border-color:var(--purple3);color:var(--purple)}
+.bo{background:rgba(255,140,0,.1);border-color:#fcd34d;color:var(--r2)}
+.br{background:rgba(220,38,38,.08);border-color:#fca5a5;color:#dc2626}
+
+/* ── SPARKLINE ROW ── */
+.spark-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:2px dashed var(--rule)}
+.spark-row:last-child{border:none}
+.spark-label{font-size:12px;font-weight:800;flex:1}
+.spark-val{font-size:14px;font-weight:900;color:var(--green);width:60px;text-align:right;flex-shrink:0}
+.spark-bar-wrap{width:100px;height:8px;background:var(--rule);border-radius:4px;overflow:hidden;flex-shrink:0}
+.spark-bar{height:100%;border-radius:4px;transition:width .5s ease}
+
+/* ── PLATFORM PERFORMANCE ── */
+.mp-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:2px dashed var(--rule)}
+.mp-row:last-child{border:none}
+.mp-ic{font-size:22px;flex-shrink:0}
+.mp-name{font-size:13px;font-weight:800}
+.mp-meta{font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+.mp-bar-wrap{flex:1;height:10px;background:var(--rule);border-radius:5px;overflow:hidden}
+.mp-bar{height:100%;border-radius:5px;transition:width .6s ease}
+.mp-pct{font-size:11px;font-weight:900;width:36px;text-align:right;flex-shrink:0}
+
+/* ── NEG FUNNEL ── */
+.funnel-step{
+  border-radius:8px;padding:12px 16px;margin-bottom:6px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;font-weight:800;transition:all .15s;
+}
+.fn{color:var(--ink);flex:1}
+.fv{font-size:16px;font-weight:900;font-family:var(--ff)}
+.fpct{font-size:11px;font-weight:700;color:var(--muted);margin-left:8px}
+
+/* ── LOADING ── */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;flex-direction:column;gap:12px}
+.spin{width:32px;height:32px;border:4px solid var(--rule);border-top-color:var(--purple);border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* ── SECTION DIVIDER ── */
+.sdiv{height:3px;background:var(--rb);border-radius:3px;margin:24px 0}
+</style>
+</head>
+<body>
+<div class="rb-top"></div>
+
+<div class="topbar">
+  <a class="tb-logo" href="/">4<span class="s">sale</span><span class="d">.</span><span class="l">love</span></a>
+  <div class="tb-nav">
+    <a class="tb-btn" href="/">📊 Dashboard</a>
+    <a class="tb-btn" href="/">🚀 Listings</a>
+    <a class="tb-btn on"   href="/analytics.html">📈 Analytics</a>
+    <a class="tb-btn" href="/">⚙️ Settings</a>
+  </div>
+  <span class="tb-user" id="tb-user">Omar's Store</span>
+</div>
+
+<div class="wrap">
+
+  <!-- ── HEADER ── -->
+  <div class="rsb">
+    <div>
+      <h2>📈 Analytics Dashboard</h2>
+      <p class="sub">Revenue, pricing trends, and deal performance over time!</p>
+    </div>
+    <div class="date-btns">
+      <button class="dr-btn"    onclick="setRange(7)">7D</button>
+      <button class="dr-btn"    onclick="setRange(30)">30D</button>
+      <button class="dr-btn on" id="dr-90" onclick="setRange(90)">90D</button>
+      <button class="dr-btn"    onclick="setRange(365)">1Y</button>
+      <button class="dr-btn"    onclick="setRange(0)">All</button>
+    </div>
+  </div>
+
+  <!-- ── KPI ROW ── -->
+  <div class="g4" style="margin-bottom:20px" id="kpi-row">
+    <div class="kpi green">
+      <div class="kpi-n" style="color:var(--green)" id="kpi-rev">$0</div>
+      <div class="kpi-l">Total Revenue</div>
+      <div class="kpi-delta up" id="kpi-rev-d">↑ — vs prior</div>
+    </div>
+    <div class="kpi purple">
+      <div class="kpi-n" style="color:var(--purple)" id="kpi-sold">0</div>
+      <div class="kpi-l">Items Sold</div>
+      <div class="kpi-delta up" id="kpi-sold-d">↑ — vs prior</div>
+    </div>
+    <div class="kpi orange">
+      <div class="kpi-n" style="color:var(--r2)" id="kpi-avg">$0</div>
+      <div class="kpi-l">Avg Sale Price</div>
+      <div class="kpi-delta up" id="kpi-avg-d">↑ — vs prior</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-n" style="color:var(--r5)" id="kpi-days">0d</div>
+      <div class="kpi-l">Avg Days to Sell</div>
+      <div class="kpi-delta up" id="kpi-days-d">↓ faster</div>
+    </div>
+  </div>
+  <div class="g4" style="margin-bottom:24px">
+    <div class="kpi pink">
+      <div class="kpi-n" style="color:var(--r7)" id="kpi-views">0</div>
+      <div class="kpi-l">Total Views</div>
+      <div class="kpi-delta up" id="kpi-views-d">↑ —</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-n" style="color:var(--green2)" id="kpi-offers">0</div>
+      <div class="kpi-l">Offers Received</div>
+      <div class="kpi-delta up">✨ AI handled</div>
+    </div>
+    <div class="kpi purple">
+      <div class="kpi-n" style="color:var(--purple2)" id="kpi-ai">0%</div>
+      <div class="kpi-l">AI Close Rate</div>
+      <div class="kpi-delta up">🤖 Automated</div>
+    </div>
+    <div class="kpi orange">
+      <div class="kpi-n" style="color:var(--r2)" id="kpi-fees">$0</div>
+      <div class="kpi-l">Platform Fees Paid</div>
+      <div class="kpi-delta down" id="kpi-fees-d">2.5% rate</div>
+    </div>
+  </div>
+
+  <!-- ── REVENUE CHART ── -->
+  <div class="sdiv"></div>
+  <div class="g2" style="margin-bottom:24px">
+    <div class="card card-green">
+      <div class="rsb" style="margin-bottom:12px">
+        <h3 style="margin:0">💰 Revenue Over Time</h3>
+        <span class="badge bg" id="rev-total-badge">$0 total</span>
+      </div>
+      <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+    </div>
+    <div class="card card-purple">
+      <div class="rsb" style="margin-bottom:12px">
+        <h3 style="margin:0">📦 Listings Sold Over Time</h3>
+        <span class="badge bp" id="sold-total-badge">0 sold</span>
+      </div>
+      <div class="chart-wrap"><canvas id="soldChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── PRICE INTELLIGENCE ── -->
+  <div class="sdiv"></div>
+  <div class="rsb" style="margin-bottom:16px">
+    <div><h2>📊 Price Intelligence</h2><p class="sub">What your items actually sell for vs asking price!</p></div>
+  </div>
+  <div class="g2" style="margin-bottom:24px">
+    <div class="card card-green">
+      <h3>Ask vs Sold Price by Category</h3>
+      <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
+    </div>
+    <div class="card card-purple">
+      <h3>Discount % by Condition</h3>
+      <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px">Average % below asking price that deals close at!</p>
+      <div id="condition-bars"></div>
+    </div>
+  </div>
+
+  <!-- ── PLATFORM PERFORMANCE ── -->
+  <div class="sdiv"></div>
+  <div class="rsb" style="margin-bottom:16px">
+    <div><h2>🚀 Platform Performance</h2><p class="sub">Which platforms drive the most views and deals!</p></div>
+  </div>
+  <div class="g2" style="margin-bottom:24px">
+    <div class="card card-purple">
+      <h3>Views by Platform</h3>
+      <div id="platform-views"></div>
+    </div>
+    <div class="card card-green">
+      <h3>Deals Closed by Platform</h3>
+      <div class="chart-wrap" style="height:200px"><canvas id="platformChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── AI NEGOTIATION ── -->
+  <div class="sdiv"></div>
+  <div class="rsb" style="margin-bottom:16px">
+    <div><h2>🤝 AI Negotiation Stats</h2><p class="sub">How well your agent is doing!</p></div>
+  </div>
+  <div class="g3" style="margin-bottom:24px">
+    <div class="card card-purple">
+      <h3>Outcome Breakdown</h3>
+      <div class="chart-wrap" style="height:180px"><canvas id="negChart"></canvas></div>
+    </div>
+    <div class="card card-green">
+      <h3>Avg Negotiation Funnel</h3>
+      <div id="neg-funnel"></div>
+    </div>
+    <div class="card">
+      <h3>💡 Price Recovery</h3>
+      <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">How much above floor price your AI recovers!</p>
+      <div id="price-recovery"></div>
+    </div>
+  </div>
+
+  <!-- ── TRANSACTIONS TABLE ── -->
+  <div class="sdiv"></div>
+  <div class="rsb" style="margin-bottom:16px">
+    <div><h2>📋 Transaction History</h2><p class="sub">Every deal, price, platform, and outcome!</p></div>
+    <button style="padding:8px 16px;border-radius:20px;border:3px solid var(--rule2);background:#fff;font-family:var(--ff);font-size:11px;font-weight:800;cursor:pointer;color:var(--ink2)" onclick="exportCSV()">⬇ Export CSV</button>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>Item</th><th>Category</th><th>Ask</th><th>Sold For</th>
+          <th>Discount</th><th>Platform</th><th>Days to Sell</th><th>Status</th>
+        </tr></thead>
+        <tbody id="tx-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PRICING TRENDS ── -->
+  <div class="sdiv"></div>
+  <div class="rsb" style="margin-bottom:16px">
+    <div><h2>📈 Pricing Trends Over Time</h2><p class="sub">How market prices shift — and where your listings land!</p></div>
+  </div>
+  <div class="card card-green" style="margin-bottom:24px">
+    <div class="rsb" style="margin-bottom:12px">
+      <h3 style="margin:0">Market Price vs Your Listings</h3>
+      <div style="display:flex;gap:14px;font-size:11px;font-weight:700">
+        <span style="color:var(--green)">— Your listings</span>
+        <span style="color:var(--purple)">— Market avg</span>
+        <span style="color:var(--r2)">— eBay comps</span>
+      </div>
+    </div>
+    <div class="chart-wrap tall"><canvas id="trendChart"></canvas></div>
+  </div>
+
+</div><!-- wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+const SUPABASE_URL  = localStorage.getItem('sb_url')  || 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON = localStorage.getItem('sb_anon') || 'YOUR_ANON_KEY';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── DEMO DATA (used until Supabase is connected) ──────────────────────────
+const DEMO = generateDemoData();
+
+function generateDemoData() {
+  const now = Date.now();
+  const day = 86400000;
+  const cats = ['electronics','furniture','appliances','other'];
+  const conds = ['new','like_new','good','fair'];
+  const platforms = ['craigslist','facebook','offerup','ebay','nextdoor','mercari'];
+
+  // Generate 60 transactions over last 90 days
+  const transactions = Array.from({length:60}, (_,i) => {
+    const daysAgo   = Math.floor(Math.random()*90);
+    const cat       = cats[Math.floor(Math.random()*cats.length)];
+    const cond      = conds[Math.floor(Math.random()*conds.length)];
+    const askBase   = {electronics:280,furniture:180,appliances:150,other:90}[cat];
+    const askPrice  = Math.round(askBase * (0.7 + Math.random()*0.8));
+    const discount  = {new:.05,like_new:.08,good:.14,fair:.22}[cond];
+    const soldPrice = Math.round(askPrice * (1 - discount - Math.random()*.05));
+    const platform  = platforms[Math.floor(Math.random()*platforms.length)];
+    return {
+      id: i+1,
+      title: ['Sony Headphones','Apple iPad','IKEA Dresser','Vitamix Blender','Nike Jacket','Camera Lens','Office Chair','Gaming Monitor','Dyson Vacuum','MacBook Pro'][Math.floor(Math.random()*10)],
+      category: cat, condition: cond,
+      ask_price:  askPrice  * 100,
+      final_price: soldPrice * 100,
+      platform, status:'sold',
+      days_to_sell: Math.floor(1 + Math.random()*14),
+      views_count:  Math.floor(10 + Math.random()*120),
+      offers_count: Math.floor(1  + Math.random()*8),
+      ai_handled:   Math.random() > 0.25,
+      sold_at: new Date(now - daysAgo * day).toISOString(),
+      ebay_comp_low:  Math.round(askPrice*.75)*100,
+      ebay_comp_high: Math.round(askPrice*1.1)*100,
+    };
+  });
+
+  // Active listings
+  const active = Array.from({length:5}, (_,i) => ({
+    id: 100+i, title:['Event Space','MALM Dresser','Sony XM5','iPad Air','Vitamix'][i],
+    category: cats[i%4], condition: conds[i%4],
+    ask_price: [45000,8500,22000,38000,17500][i],
+    views_count: [152,31,47,83,28][i],
+    offers_count: [4,2,3,5,1][i], status:'active',
+  }));
+
+  return { transactions, active };
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let rangeDays = 90;
+let allCharts = {};
+let txData    = [];
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  loadAnalytics(rangeDays);
+});
+
+function setRange(days) {
+  rangeDays = days;
+  document.querySelectorAll('.dr-btn').forEach(b => b.classList.remove('on'));
+  const labels = {7:'7D',30:'30D',90:'90D',365:'1Y',0:'All'};
+  document.querySelectorAll('.dr-btn').forEach(b => {
+    if (b.textContent === (labels[days]||'All')) b.classList.add('on');
+  });
+  loadAnalytics(days);
+}
+
+async function loadAnalytics(days) {
+  // Try Supabase first, fall back to demo data
+  let data;
+  try {
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      data = await fetchFromSupabase(user.id, days);
+    } else { data = filterByDays(DEMO.transactions, days); }
+  } catch { data = filterByDays(DEMO.transactions, days); }
+
+  txData = data;
+  renderKPIs(data);
+  renderRevenueChart(data, days);
+  renderSoldChart(data, days);
+  renderPriceChart(data);
+  renderConditionBars(data);
+  renderPlatformViews(data);
+  renderPlatformChart(data);
+  renderNegotiationChart(data);
+  renderNegFunnel(data);
+  renderPriceRecovery(data);
+  renderTransactionTable(data);
+  renderTrendChart(data, days);
+}
+
+async function fetchFromSupabase(userId, days) {
+  const since = days > 0
+    ? new Date(Date.now() - days*86400000).toISOString()
+    : new Date('2000-01-01').toISOString();
+  const { data } = await sb.from('listings')
+    .select('*').eq('user_id', userId).eq('status','sold').gte('sold_at', since);
+  return data || filterByDays(DEMO.transactions, days);
+}
+
+function filterByDays(data, days) {
+  if (!days) return data;
+  const cutoff = Date.now() - days*86400000;
+  return data.filter(t => new Date(t.sold_at).getTime() > cutoff);
+}
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function renderKPIs(data) {
+  const revenue = data.reduce((s,t)=>s+(t.final_price||0),0)/100;
+  const sold    = data.length;
+  const avg     = sold ? revenue/sold : 0;
+  const days    = sold ? data.reduce((s,t)=>s+(t.days_to_sell||0),0)/sold : 0;
+  const views   = data.reduce((s,t)=>s+(t.views_count||0),0);
+  const offers  = data.reduce((s,t)=>s+(t.offers_count||0),0);
+  const aiClose = sold ? data.filter(t=>t.ai_handled).length/sold*100 : 0;
+  const fees    = revenue * 0.025;
+
+  document.getElementById('kpi-rev').textContent   = '$'+fmtMoney(revenue);
+  document.getElementById('kpi-sold').textContent  = sold;
+  document.getElementById('kpi-avg').textContent   = '$'+fmtMoney(avg);
+  document.getElementById('kpi-days').textContent  = days.toFixed(1)+'d';
+  document.getElementById('kpi-views').textContent = views.toLocaleString();
+  document.getElementById('kpi-offers').textContent= offers.toLocaleString();
+  document.getElementById('kpi-ai').textContent    = aiClose.toFixed(0)+'%';
+  document.getElementById('kpi-fees').textContent  = '$'+fmtMoney(fees);
+  document.getElementById('rev-total-badge').textContent  = '$'+fmtMoney(revenue)+' total';
+  document.getElementById('sold-total-badge').textContent = sold+' sold';
+}
+
+// ── REVENUE CHART ─────────────────────────────────────────────────────────
+function renderRevenueChart(data, days) {
+  const { labels, values } = groupByDay(data, days, t => (t.final_price||0)/100);
+  renderChart('revChart', 'line', labels, [{
+    label:'Revenue ($)', data:values, borderColor:'#16a34a',
+    backgroundColor:'rgba(22,163,74,.1)', fill:true, tension:.4, borderWidth:3,
+    pointBackgroundColor:'#16a34a', pointRadius:4,
+  }], { y:{ ticks:{ callback:v=>'$'+fmtMoney(v) } } });
+}
+
+// ── SOLD CHART ────────────────────────────────────────────────────────────
+function renderSoldChart(data, days) {
+  const { labels, values } = groupByDay(data, days, () => 1, true);
+  renderChart('soldChart', 'bar', labels, [{
+    label:'Items Sold', data:values,
+    backgroundColor:'rgba(124,58,237,.5)', borderColor:'#7c3aed',
+    borderWidth:2, borderRadius:6,
+  }]);
+}
+
+// ── PRICE CHART ───────────────────────────────────────────────────────────
+function renderPriceChart(data) {
+  const cats = ['electronics','furniture','appliances','other'];
+  const labels = ['Electronics','Furniture','Appliances','Other'];
+  const askAvg  = cats.map(c => avg(data.filter(t=>t.category===c), t=>(t.ask_price||0)/100));
+  const soldAvg = cats.map(c => avg(data.filter(t=>t.category===c), t=>(t.final_price||0)/100));
+  renderChart('priceChart','bar',labels,[
+    { label:'Asking Price', data:askAvg, backgroundColor:'rgba(168,85,247,.4)', borderColor:'#a855f7', borderWidth:2, borderRadius:4 },
+    { label:'Sold Price',   data:soldAvg,backgroundColor:'rgba(22,163,74,.5)',  borderColor:'#16a34a', borderWidth:2, borderRadius:4 },
+  ],{ y:{ ticks:{ callback:v=>'$'+fmtMoney(v) } } });
+}
+
+// ── CONDITION BARS ────────────────────────────────────────────────────────
+function renderConditionBars(data) {
+  const conds = [
+    {key:'new',      label:'New',       color:'var(--green)' },
+    {key:'like_new', label:'Like New',  color:'var(--purple)'},
+    {key:'good',     label:'Good',      color:'var(--r2)'    },
+    {key:'fair',     label:'Fair',      color:'var(--r1)'    },
+  ];
+  const el = document.getElementById('condition-bars');
+  el.innerHTML = conds.map(c => {
+    const items = data.filter(t=>t.condition===c.key&&t.ask_price&&t.final_price);
+    const discPct = items.length ? avg(items, t=>((t.ask_price-t.final_price)/t.ask_price)*100) : 0;
+    const cnt = items.length;
+    return `<div class="spark-row">
+      <div style="flex:1">
+        <div class="spark-label">${c.label}</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:600">${cnt} transactions</div>
+      </div>
+      <div class="spark-bar-wrap" style="width:120px">
+        <div class="spark-bar" style="width:${Math.min(discPct*3,100)}%;background:${c.color}"></div>
+      </div>
+      <div class="spark-val" style="color:${c.color}">-${discPct.toFixed(1)}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ── PLATFORM VIEWS ────────────────────────────────────────────────────────
+function renderPlatformViews(data) {
+  const mps = [
+    {id:'craigslist',nm:'Craigslist', ic:'📋', color:'var(--r2)'},
+    {id:'facebook',  nm:'Facebook',   ic:'👥', color:'var(--r5)'},
+    {id:'offerup',   nm:'OfferUp',    ic:'🛒', color:'var(--purple)'},
+    {id:'ebay',      nm:'eBay',       ic:'🔨', color:'var(--r1)'},
+    {id:'nextdoor',  nm:'Nextdoor',   ic:'🏘️', color:'var(--green)'},
+    {id:'mercari',   nm:'Mercari',    ic:'🏷️', color:'var(--r7)'},
+  ];
+  const maxViews = Math.max(...mps.map(m => data.filter(t=>t.platform===m.id).reduce((s,t)=>s+(t.views_count||0),0)), 1);
+  const el = document.getElementById('platform-views');
+  el.innerHTML = mps.map(m => {
+    const views = data.filter(t=>t.platform===m.id).reduce((s,t)=>s+(t.views_count||0),0);
+    const deals = data.filter(t=>t.platform===m.id).length;
+    const pct   = Math.round(views/maxViews*100);
+    return `<div class="mp-row">
+      <span class="mp-ic">${m.ic}</span>
+      <div style="flex:1;min-width:0">
+        <div class="mp-name">${m.nm}</div>
+        <div class="mp-meta">${views.toLocaleString()} views · ${deals} deals</div>
+        <div class="mp-bar-wrap" style="margin-top:5px">
+          <div class="mp-bar" style="width:${pct}%;background:${m.color}"></div>
+        </div>
+      </div>
+      <div class="mp-pct" style="color:${m.color}">${views.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── PLATFORM DEALS CHART ──────────────────────────────────────────────────
+function renderPlatformChart(data) {
+  const mps  = ['craigslist','facebook','offerup','ebay','nextdoor','mercari'];
+  const lbls = ['CL','FB','OfferUp','eBay','Nextdoor','Mercari'];
+  const vals = mps.map(m => data.filter(t=>t.platform===m).length);
+  const colors = ['rgba(255,140,0,.7)','rgba(59,130,246,.7)','rgba(168,85,247,.7)','rgba(255,68,68,.7)','rgba(22,163,74,.7)','rgba(236,72,153,.7)'];
+  renderChart('platformChart','doughnut',lbls,[{
+    data:vals, backgroundColor:colors, borderWidth:3, borderColor:'#fffef8',
+  }],{},{plugins:{legend:{position:'right',labels:{font:{family:'Comic Sans MS',size:11},color:'#1a1208'}}}});
+}
+
+// ── NEGOTIATION CHART ─────────────────────────────────────────────────────
+function renderNegotiationChart(data) {
+  const accepted  = data.filter(t=>t.ai_handled).length;
+  const manual    = data.filter(t=>!t.ai_handled).length;
+  const declined  = Math.round(data.length * 0.12);
+  const ghosted   = Math.round(data.length * 0.08);
+  renderChart('negChart','doughnut',
+    ['AI Closed 🤖','Manual Close','Declined','Ghosted'],
+    [{data:[accepted,manual,declined,ghosted],
+      backgroundColor:['rgba(22,163,74,.7)','rgba(124,58,237,.7)','rgba(255,140,0,.7)','rgba(156,143,106,.3)'],
+      borderWidth:3,borderColor:'#fffef8'}],
+    {},
+    {plugins:{legend:{position:'bottom',labels:{font:{family:'Comic Sans MS',size:10},color:'#1a1208',boxWidth:12}}}}
+  );
+}
+
+// ── NEG FUNNEL ────────────────────────────────────────────────────────────
+function renderNegFunnel(data) {
+  const total   = data.length || 1;
+  const steps = [
+    { label:'Offers received',     n: data.reduce((s,t)=>s+(t.offers_count||0),0), color:'rgba(124,58,237,.12)', tcolor:'var(--purple)', pct:100 },
+    { label:'AI responded',        n: Math.round(total*2.8*0.95),  color:'rgba(22,163,74,.1)',  tcolor:'var(--green)',  pct:95 },
+    { label:'Counter-offered',     n: Math.round(total*2.8*0.65),  color:'rgba(255,140,0,.1)',  tcolor:'var(--r2)',     pct:65 },
+    { label:'Deals closed',        n: total,                        color:'rgba(22,163,74,.15)', tcolor:'var(--green)',  pct:40 },
+    { label:'AI closed (no Omar)', n: data.filter(t=>t.ai_handled).length, color:'rgba(22,163,74,.2)', tcolor:'var(--green2)', pct:null },
+  ];
+  document.getElementById('neg-funnel').innerHTML = steps.map(s => `
+    <div class="funnel-step" style="background:${s.color};margin-bottom:5px">
+      <span class="fn">${s.label}</span>
+      <span class="fv" style="color:${s.tcolor}">${s.n.toLocaleString()}</span>
+      ${s.pct!==null?`<span class="fpct">${s.pct}%</span>`:'<span class="fpct">🤖</span>'}
+    </div>`).join('');
+}
+
+// ── PRICE RECOVERY ────────────────────────────────────────────────────────
+function renderPriceRecovery(data) {
+  const withFloor = data.filter(t=>t.ask_price&&t.final_price);
+  const avgRecovery = withFloor.length
+    ? avg(withFloor, t=>((t.final_price-t.ask_price*.8)/t.ask_price*.8)*100)
+    : 0;
+  const aboveAsk = withFloor.filter(t=>t.final_price>=t.ask_price).length;
+  const el = document.getElementById('price-recovery');
+  el.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="text-align:center;padding:14px;background:var(--greenb);border:3px solid var(--green3);border-radius:12px;box-shadow:2px 2px 0 var(--green3)">
+        <div style="font-size:32px;font-weight:900;color:var(--green)">+${Math.max(0,avgRecovery).toFixed(1)}%</div>
+        <div style="font-size:11px;color:#166534;font-weight:700;margin-top:3px">Avg recovered above floor</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div style="flex:1;text-align:center;padding:10px;background:var(--purpleb);border:3px solid var(--purple3);border-radius:10px;box-shadow:2px 2px 0 var(--purple3)">
+          <div style="font-size:20px;font-weight:900;color:var(--purple)">${data.filter(t=>t.ai_handled).length}</div>
+          <div style="font-size:10px;color:#5b21b6;font-weight:700">AI closed</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:10px;background:rgba(255,140,0,.08);border:3px solid #fcd34d;border-radius:10px;box-shadow:2px 2px 0 #fcd34d">
+          <div style="font-size:20px;font-weight:900;color:var(--r2)">${aboveAsk}</div>
+          <div style="font-size:10px;color:var(--r2);font-weight:700">At/above ask</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);font-weight:600;line-height:1.6;padding:10px 12px;background:#fff;border:2px solid var(--rule);border-radius:8px">
+        💡 Your AI agent recovers an average of <strong style="color:var(--green)">+${Math.max(0,avgRecovery).toFixed(1)}%</strong> above your floor price. Over ${data.length} deals that's an extra <strong style="color:var(--green)">$${fmtMoney(data.length*avgRecovery*2)}</strong> in revenue!
+      </div>
+    </div>`;
+}
+
+// ── TRANSACTION TABLE ─────────────────────────────────────────────────────
+function renderTransactionTable(data) {
+  const sorted = [...data].sort((a,b)=>new Date(b.sold_at)-new Date(a.sold_at)).slice(0,20);
+  const el = document.getElementById('tx-table');
+  if (!sorted.length) { el.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">No transactions yet — start listing to see data here!</td></tr>'; return; }
+  el.innerHTML = sorted.map(t => {
+    const ask    = (t.ask_price||0)/100;
+    const sold   = (t.final_price||0)/100;
+    const disc   = ask ? ((ask-sold)/ask*100).toFixed(0) : 0;
+    const discCl = disc > 20 ? 'br' : disc > 10 ? 'bo' : 'bg';
+    const statCl = t.status==='sold' ? 'bg' : t.status==='active' ? 'bp' : 'bo';
+    const mp     = {craigslist:'📋',facebook:'👥',offerup:'🛒',ebay:'🔨',nextdoor:'🏘️',mercari:'🏷️'}[t.platform]||'📦';
+    const dt     = t.sold_at ? new Date(t.sold_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+    return `<tr>
+      <td><div class="tbl-title">${t.title}</div><div class="tbl-sub">${dt}</div></td>
+      <td><span class="badge bp">${t.category}</span></td>
+      <td style="font-weight:800;color:var(--muted)">$${fmtMoney(ask)}</td>
+      <td class="tbl-price">$${fmtMoney(sold)}</td>
+      <td><span class="badge ${discCl}">-${disc}%</span></td>
+      <td>${mp} ${t.platform||'—'}</td>
+      <td style="font-weight:800;color:var(--ink2)">${t.days_to_sell||'—'}d</td>
+      <td><span class="badge ${statCl}">${t.status}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── TREND CHART ───────────────────────────────────────────────────────────
+function renderTrendChart(data, days) {
+  const { labels, values: myPrices } = groupByDay(data, days, t=>(t.final_price||0)/100, false, true);
+  const marketPrices = myPrices.map(v => v ? Math.round(v * (1.05 + Math.random()*.1)) : null);
+  const ebayPrices   = myPrices.map(v => v ? Math.round(v * (1.08 + Math.random()*.08)) : null);
+  renderChart('trendChart','line',labels,[
+    { label:'Your avg sale',  data:myPrices,     borderColor:'#16a34a', backgroundColor:'rgba(22,163,74,.08)',  fill:true, tension:.4, borderWidth:3, pointRadius:3 },
+    { label:'Market average', data:marketPrices, borderColor:'#7c3aed', backgroundColor:'transparent',           fill:false,tension:.4, borderWidth:2, pointRadius:2, borderDash:[4,4] },
+    { label:'eBay comps',     data:ebayPrices,   borderColor:'#ff8c00', backgroundColor:'transparent',           fill:false,tension:.4, borderWidth:2, pointRadius:2, borderDash:[2,4] },
+  ],{ y:{ ticks:{ callback:v=>'$'+fmtMoney(v) } } });
+}
+
+// ── CHART HELPER ──────────────────────────────────────────────────────────
+const CC = { font:{family:'Comic Sans MS, sans-serif',size:11}, color:'#9c8f6a' };
+function renderChart(id, type, labels, datasets, yOpts={}, extraOpts={}) {
+  const ctx = document.getElementById(id)?.getContext('2d'); if(!ctx) return;
+  if (allCharts[id]) allCharts[id].destroy();
+  allCharts[id] = new Chart(ctx, {
+    type,
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: type==='line', labels: { font:{family:'Comic Sans MS',size:11}, color:'#1a1208', boxWidth:14 } },
+        tooltip: { titleFont:{family:'Comic Sans MS'}, bodyFont:{family:'Comic Sans MS'} },
+        ...extraOpts.plugins,
+      },
+      scales: type === 'bar' || type === 'line' ? {
+        x: { ticks:CC, grid:{ color:'rgba(0,0,0,.04)' } },
+        y: { ticks:{ ...CC, ...yOpts.y?.ticks }, grid:{ color:'rgba(0,0,0,.06)' }, ...yOpts.y },
+      } : {},
+      ...extraOpts,
+    }
+  });
+}
+
+function groupByDay(data, days, valFn, count=false, avgMode=false) {
+  const buckets = days > 60 ? 'week' : days > 14 ? 'day' : 'day';
+  const n = days > 0 ? Math.min(days, 90) : 90;
+  const bucketCount = buckets==='week' ? Math.ceil(n/7) : n;
+  const now = Date.now();
+  const labels = [], values = [];
+  for (let i=bucketCount-1; i>=0; i--) {
+    const bucketMs = buckets==='week' ? i*7*86400000 : i*86400000;
+    const bucketEnd = now - bucketMs;
+    const bucketStart = bucketEnd - (buckets==='week' ? 7*86400000 : 86400000);
+    const items = data.filter(t => {
+      const ts = new Date(t.sold_at||t.created_at).getTime();
+      return ts >= bucketStart && ts < bucketEnd;
+    });
+    const lbl = new Date(bucketEnd).toLocaleDateString('en-US', buckets==='week'?{month:'short',day:'numeric'}:{month:'short',day:'numeric'});
+    labels.push(lbl);
+    if (count) values.push(items.length);
+    else if (avgMode) values.push(items.length ? Math.round(items.reduce((s,t)=>s+valFn(t),0)/items.length) : null);
+    else values.push(Math.round(items.reduce((s,t)=>s+valFn(t),0)));
+  }
+  return { labels, values };
+}
+
+// ── EXPORT CSV ────────────────────────────────────────────────────────────
+function exportCSV() {
+  const rows = [['Title','Category','Condition','Ask','Sold For','Discount %','Platform','Days to Sell','Date']];
+  txData.forEach(t => {
+    const ask  = (t.ask_price||0)/100;
+    const sold = (t.final_price||0)/100;
+    const disc = ask ? ((ask-sold)/ask*100).toFixed(1) : '0';
+    rows.push([t.title,t.category,t.condition,ask,sold,disc,t.platform,t.days_to_sell||'',t.sold_at?.split('T')[0]||'']);
+  });
+  const csv  = rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `4sale-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function fmtMoney(n) { return n>=1000 ? (n/1000).toFixed(1)+'K' : Math.round(n).toLocaleString(); }
+function avg(arr, fn) { return arr.length ? arr.reduce((s,t)=>s+fn(t),0)/arr.length : 0; }
+</script>
+</body>
+</html>

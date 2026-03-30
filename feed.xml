@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title><![CDATA[Omar's Hi-Style Furniture — 4sale.love]]></title>
+    <link>https://4sale.love/omar</link>
+    <description><![CDATA[Quality furniture and home goods. AI-powered marketplace with instant offers. Chicago pickup or shipped.]]></description>
+
+    <item>
+      <title><![CDATA[Sony WH-1000XM5 Noise Cancelling Headphones]]></title>
+      <link>https://4sale.love/omar/sony-xm5-k7m2</link>
+      <description><![CDATA[Lightly used 3 months. All accessories included: case, USB-C cable, 3.5mm adapter. Battery holds 30hrs. Like new condition.]]></description>
+      <g:id>sony-xm5-k7m2</g:id>
+      <g:title><![CDATA[Sony WH-1000XM5 Noise Cancelling Headphones]]></g:title>
+      <g:description><![CDATA[Lightly used 3 months. All accessories included: case, USB-C cable, 3.5mm adapter. Battery holds 30hrs.]]></g:description>
+      <g:link>https://4sale.love/omar/sony-xm5-k7m2</g:link>
+      <g:image_link>https://4sale.love/omar/images/sony-xm5-k7m2.jpg</g:image_link>
+      <g:price>220.00 USD</g:price>
+      <g:availability>in_stock</g:availability>
+      <g:condition>used</g:condition>
+      <g:brand>Sony</g:brand>
+      <g:mpn>WH-1000XM5</g:mpn>
+      <g:product_type>Electronics &gt; Audio &gt; Headphones</g:product_type>
+      <g:shipping>
+        <g:country>US</g:country>
+        <g:service>Standard</g:service>
+        <g:price>0.00 USD</g:price>
+      </g:shipping>
+    </item>
+
+    <item>
+      <title><![CDATA[Apple iPad Air 5th Gen 64GB WiFi + Apple Pencil 2nd Gen]]></title>
+      <link>https://4sale.love/omar/ipad-air-p4n1</link>
+      <description><![CDATA[Battery health 91%. Screen protector since day one — pristine display. Includes Apple Pencil 2nd gen and Smart Folio cover in navy.]]></description>
+      <g:id>ipad-air-p4n1</g:id>
+      <g:title><![CDATA[Apple iPad Air 5th Gen 64GB WiFi + Apple Pencil 2nd Gen]]></g:title>
+      <g:description><![CDATA[Battery health 91%. Screen protector since day one. Includes Pencil 2nd gen and Smart Folio.]]></g:description>
+      <g:link>https://4sale.love/omar/ipad-air-p4n1</g:link>
+      <g:image_link>https://4sale.love/omar/images/ipad-air-p4n1.jpg</g:image_link>
+      <g:price>380.00 USD</g:price>
+      <g:availability>in_stock</g:availability>
+      <g:condition>used</g:condition>
+      <g:brand>Apple</g:brand>
+      <g:mpn>MMMQ3LL/A</g:mpn>
+      <g:product_type>Electronics &gt; Computers &gt; Tablets</g:product_type>
+      <g:shipping>
+        <g:country>US</g:country>
+        <g:service>Standard</g:service>
+        <g:price>0.00 USD</g:price>
+      </g:shipping>
+    </item>
+
+    <item>
+      <title><![CDATA[IKEA MALM 6-Drawer Dresser White]]></title>
+      <link>https://4sale.love/omar/malm-q2p9</link>
+      <description><![CDATA[Moving sale. Solid condition, minor scuff on bottom drawer. Easy to disassemble. Chicago pickup required.]]></description>
+      <g:id>malm-q2p9</g:id>
+      <g:title><![CDATA[IKEA MALM 6-Drawer Dresser White]]></g:title>
+      <g:description><![CDATA[Moving sale. Solid condition, minor scuff on bottom drawer. Easy to disassemble.]]></g:description>
+      <g:link>https://4sale.love/omar/malm-q2p9</g:link>
+      <g:image_link>https://4sale.love/omar/images/malm-q2p9.jpg</g:image_link>
+      <g:price>85.00 USD</g:price>
+      <g:availability>in_stock</g:availability>
+      <g:condition>used</g:condition>
+      <g:brand>IKEA</g:brand>
+      <g:mpn>MALM-6DRAWER</g:mpn>
+      <g:product_type>Furniture &gt; Storage &gt; Dressers</g:product_type>
+      <g:shipping>
+        <g:country>US</g:country>
+        <g:service>Local Pickup Only</g:service>
+        <g:price>0.00 USD</g:price>
+      </g:shipping>
+    </item>
+
+    <item>
+      <title><![CDATA[Vitamix E310 Explorian Blender]]></title>
+      <link>https://4sale.love/omar/vitamix-n1k5</link>
+      <description><![CDATA[Works perfectly. All original parts, barely used. Retails $450 new. Variable speed and pulse. Selling for built-in upgrade.]]></description>
+      <g:id>vitamix-n1k5</g:id>
+      <g:title><![CDATA[Vitamix E310 Explorian Blender]]></g:title>
+      <g:description><![CDATA[Works perfectly. All original parts, barely used. Variable speed and pulse.]]></g:description>
+      <g:link>https://4sale.love/omar/vitamix-n1k5</g:link>
+      <g:image_link>https://4sale.love/omar/images/vitamix-n1k5.jpg</g:image_link>
+      <g:price>175.00 USD</g:price>
+      <g:availability>in_stock</g:availability>
+      <g:condition>used</g:condition>
+      <g:brand>Vitamix</g:brand>
+      <g:mpn>E310</g:mpn>
+      <g:product_type>Appliances &gt; Kitchen &gt; Blenders</g:product_type>
+      <g:shipping>
+        <g:country>US</g:country>
+        <g:service>Standard</g:service>
+        <g:price>0.00 USD</g:price>
+      </g:shipping>
+    </item>
+
+  </channel>
+</rss>

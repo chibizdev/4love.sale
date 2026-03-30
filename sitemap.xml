@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Storefront homepage -->
+  <url>
+    <loc>https://4sale.love/omar</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Individual listing pages -->
+  <url>
+    <loc>https://4sale.love/omar/sony-xm5-k7m2</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-03-18</lastmod>
+  </url>
+
+  <url>
+    <loc>https://4sale.love/omar/ipad-air-p4n1</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-03-18</lastmod>
+  </url>
+
+  <url>
+    <loc>https://4sale.love/omar/malm-q2p9</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-03-18</lastmod>
+  </url>
+
+  <url>
+    <loc>https://4sale.love/omar/vitamix-n1k5</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-03-18</lastmod>
+  </url>
+
+  <url>
+    <loc>https://4sale.love/omar/event-space-w3p8</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-03-18</lastmod>
+  </url>
+
+</urlset>

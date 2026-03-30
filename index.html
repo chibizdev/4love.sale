@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4sale.love — Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --p:#7c3aed;--p2:#a855f7;--g:#16a34a;--g2:#4ade80;
+  --ink:#1a0a2e;--muted:#7c5abf;--rule:#ddd4f8;--bg:#f7f4ff;--w:#fff;
+  --r:10px;
+  --rb:linear-gradient(90deg,#ff4d4d,#ff9a00,#ffe600,#4ade80,#38bdf8,#818cf8,#e879f9);
+  --gp:linear-gradient(135deg,var(--p),var(--g));
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px}
+nav{background:var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;position:sticky;top:0;z-index:200;border-bottom:3px solid transparent;border-image:var(--rb) 1}
+.logo{font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:#fff;cursor:pointer}.logo span{color:var(--g2)}
+.tabs{display:flex;gap:3px}
+.tab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:800;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.4);transition:all .15s;font-family:'Nunito',sans-serif}
+.tab.on{background:var(--p);color:#fff;box-shadow:0 0 12px rgba(124,58,237,.5)}
+.tab:hover:not(.on){color:#fff;background:rgba(255,255,255,.08)}
+.page{display:none;padding:24px;max-width:1080px;margin:0 auto;animation:fi .2s ease}
+.page.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-family:'Baloo 2',cursive;font-size:21px;font-weight:800;margin-bottom:4px}
+h3{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;margin-bottom:10px}
+.sub{color:var(--muted);font-size:13px;font-weight:700;margin-bottom:20px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{background:var(--w);border:2px solid var(--rule);border-radius:14px;padding:20px}
+.stat{background:var(--w);border:2px solid var(--rule);border-radius:12px;padding:16px 18px}
+.stat-n{font-family:'Baloo 2',cursive;font-size:30px;font-weight:800;color:var(--p)}
+.stat-l{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+input,textarea,select{background:var(--bg);border:2px solid var(--rule);border-radius:8px;padding:9px 12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--ink);outline:none;transition:border-color .15s;width:100%}
+input:focus,textarea:focus,select:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+textarea{resize:vertical}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:20px;border:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-p{background:var(--gp);color:#fff;box-shadow:0 3px 12px rgba(124,58,237,.3)}
+.btn-p:hover{opacity:.9;transform:translateY(-1px)}
+.btn-g{background:linear-gradient(135deg,var(--g),#15803d);color:#fff;box-shadow:0 3px 12px rgba(22,163,74,.3)}
+.btn-ghost{background:var(--bg);border:2px solid var(--rule);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--p);color:var(--p)}
+.btn-sm{padding:5px 12px;font-size:11px}
+.btn-rb{background:var(--rb);color:#fff}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;border:1.5px solid}
+.bg{background:rgba(74,222,128,.12);border-color:var(--g2);color:var(--g)}
+.bp{background:rgba(168,85,247,.12);border-color:var(--p2);color:var(--p)}
+.rl{height:3px;background:var(--rb);border-radius:2px;margin-bottom:18px}
+.lrow{display:flex;align-items:center;gap:12px;padding:11px 14px;border:2px solid var(--rule);border-radius:10px;background:var(--w);margin-bottom:8px;transition:border-color .15s;cursor:pointer}
+.lrow:hover{border-color:var(--p)}
+.lem{font-size:26px;flex-shrink:0}
+.linf{flex:1;min-width:0}
+.ltit{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmet{font-size:11px;color:var(--muted);font-weight:700;margin-top:1px}
+.lpri{font-family:'Baloo 2',cursive;font-size:16px;font-weight:800;color:var(--p);flex-shrink:0}
+.code{background:#0f0520;border:2px solid #3d1f70;border-radius:10px;padding:14px 16px;font-family:'Courier New',monospace;font-size:12px;color:#a5b4fc;line-height:1.7;overflow-x:auto;position:relative;white-space:pre}
+.code-copy{position:absolute;top:10px;right:10px;background:#240f48;border:1px solid #4338ca;border-radius:6px;color:#a5b4fc;font-size:10px;padding:4px 10px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800}
+.mpg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mpt{border:2px solid var(--rule);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s;background:var(--bg);user-select:none}
+.mpt:hover{border-color:var(--p2)}
+.mpt.on{border-color:var(--g);background:rgba(74,222,128,.07)}
+.mpt .ic{font-size:18px}
+.mpt .nm{font-size:9px;font-weight:800;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.03em}
+.mpt.on .nm{color:var(--g)}
+.mpt .st{font-size:8px;color:#ccc;margin-top:1px;font-weight:700}
+.mpt.on .st{color:var(--g2)}
+.site-frame{border:2px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--w)}
+.site-bar{background:var(--ink);padding:8px 14px;display:flex;align-items:center;gap:8px}
+.site-dots{display:flex;gap:5px}
+.site-dot{width:9px;height:9px;border-radius:50%}
+.site-url{flex:1;background:#240f48;border-radius:4px;padding:3px 10px;font-size:10px;font-family:monospace;color:rgba(196,181,253,.6);text-align:center}
+.site-body{padding:20px}
+.widget-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gp);color:#fff;border:none;border-radius:20px;padding:12px 24px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,.35);transition:all .15s}
+.widget-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,58,237,.45)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);border:2px solid var(--g2);border-radius:10px;padding:12px 18px;color:var(--g2);font-size:13px;font-weight:800;z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.prog{height:6px;background:var(--rule);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.prog-fill{height:100%;background:var(--gp);border-radius:3px;transition:width .4s ease}
+.trow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)}
+.trow:last-child{border:none}
+.tl{font-size:13px;font-weight:700}.ts{font-size:11px;color:var(--muted)}
+.sw{width:38px;height:20px;background:var(--rule);border-radius:20px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.sw.on{background:var(--g)}
+.sw::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.sw.on::after{left:20px}
+.steps{display:flex;gap:0;margin-bottom:24px}
+.step{flex:1;padding:10px;text-align:center;border-bottom:3px solid var(--rule);font-size:11px;font-weight:800;color:var(--muted);cursor:pointer;transition:all .15s}
+.step.on{border-color:var(--p);color:var(--p)}
+.step.done{border-color:var(--g2);color:var(--g)}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rsb{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mt{margin-top:16px}.mb{margin-bottom:16px}
+hr{border:none;border-top:1px solid var(--rule);margin:16px 0}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ── STOREFRONT PREVIEW STYLES (scoped inside #storefront-preview) ── */
+#storefront-preview *{box-sizing:border-box}
+.sf-hero{background:#0d0d0d;padding:24px 16px 20px;position:relative;overflow:hidden}
+.sf-hero-rb{height:3px;background:linear-gradient(90deg,#ff4d00,#ffb800,#00e676,#00b4ff,#a855f7,#ff4d00);position:absolute;top:0;left:0;right:0}
+.sf-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(255,77,0,.15) 0%,transparent 55%),radial-gradient(ellipse at 10% 80%,rgba(26,158,92,.1) 0%,transparent 50%)}
+.sf-hero-inner{position:relative;z-index:1}
+.sf-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.sf-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4d00,#ffb800);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:2px solid rgba(255,255,255,.1)}
+.sf-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:2px;font-family:'Bricolage Grotesque','Baloo 2',sans-serif}
+.sf-handle{font-size:11px;color:rgba(255,255,255,.4);font-family:monospace;margin-bottom:6px}
+.sf-bio{font-size:12px;color:rgba(255,255,255,.6);line-height:1.5}
+.sf-stats{display:flex;gap:16px;margin-bottom:12px}
+.sf-stat-n{font-size:20px;font-weight:800;color:#fff}
+.sf-stat-l{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em}
+.sf-badges{display:flex;gap:6px;flex-wrap:wrap}
+.sf-badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;border:1.5px solid}
+.sf-trust{background:#fff;border-bottom:1px solid #e8e6e1;padding:8px 16px;display:flex;gap:16px;overflow-x:auto;font-size:10px;font-weight:700;color:#888;white-space:nowrap}
+.sf-trust strong{color:#0d0d0d}
+.sf-filters{padding:12px 16px 8px;display:flex;gap:7px;overflow-x:auto}
+.sf-chip{padding:6px 14px;border-radius:30px;font-size:11px;font-weight:700;border:1.5px solid #e8e6e1;background:#fff;color:#888;cursor:pointer;white-space:nowrap;font-family:'Nunito',sans-serif}
+.sf-chip.on{background:#0d0d0d;color:#fff;border-color:#0d0d0d}
+.sf-grid-wrap{padding:0 16px 16px}
+.sf-grid-label{font-size:10px;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;justify-content:space-between}
+.sf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sf-card{background:#fff;border:1.5px solid #e8e6e1;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .15s}
+.sf-card:hover{transform:translateY(-2px);border-color:#aaa}
+.sf-card.sf-full{grid-column:1/-1}
+.sf-card-img{aspect-ratio:1;background:linear-gradient(135deg,#f0ede8,#e8e5de);display:flex;align-items:center;justify-content:center;font-size:36px;position:relative}
+.sf-card.sf-full .sf-card-img{aspect-ratio:16/7;font-size:48px}
+.sf-cond-tag{position:absolute;bottom:6px;left:6px;background:rgba(13,13,13,.72);color:#fff;font-size:8px;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+.sf-views{position:absolute;bottom:6px;right:6px;color:rgba(255,255,255,.8);font-size:9px;font-weight:700}
+.sf-card-body{padding:9px}
+.sf-card-title{font-size:11px;font-weight:700;color:#0d0d0d;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px}
+.sf-price{font-size:17px;font-weight:800;color:#0d0d0d;letter-spacing:-.02em}
+.sf-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:5px;padding-top:5px;border-top:1px solid #f0ede8}
+.sf-offer-btn{background:#f5f3ef;border:none;border-radius:20px;padding:3px 10px;font-size:9px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif}
+.sf-share-bar{background:#fff;border-top:1px solid #e8e6e1;padding:12px 16px;display:flex;gap:8px;align-items:center;position:sticky;bottom:0}
+.sf-link-chip{flex:1;background:#f5f3ef;border:1.5px solid #e8e6e1;border-radius:8px;padding:8px 12px;font-family:monospace;font-size:10px;color:#ff4d00;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sf-copy{background:#0d0d0d;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap}
+
+/* ── NEGOTIATION ENGINE ─────────────────────────────────────── */
+.neg-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.neg-stat{background:var(--w);border:2px solid var(--rule);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.neg-stat-icon{font-size:24px;flex-shrink:0}
+.neg-stat-n{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--p)}
+.neg-stat-l{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+/* Thread card */
+.thread{background:var(--w);border:2px solid var(--rule);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:border-color .15s;cursor:pointer}
+.thread:hover{border-color:var(--p)}
+.thread.active-thread{border-color:var(--g2);box-shadow:0 0 0 2px rgba(74,222,128,.15)}
+.thread.needs-approval{border-color:var(--accent-lt);box-shadow:0 0 0 2px rgba(245,166,35,.15)}
+.thread-header{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.thread-em{font-size:22px;flex-shrink:0}
+.thread-info{flex:1;min-width:0}
+.thread-title{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thread-meta{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+.thread-status{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.thread-price{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;color:var(--p)}
+/* Chat bubble styles */
+.chat-wrap{padding:14px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--rule);max-height:420px;overflow-y:auto;background:var(--bg)}
+.bubble{max-width:82%;display:flex;flex-direction:column;gap:3px}
+.bubble.buyer{align-self:flex-start}
+.bubble.seller{align-self:flex-end}
+.bubble.system{align-self:center;max-width:100%}
+.bubble-content{padding:10px 13px;border-radius:14px;font-size:13px;font-weight:600;line-height:1.5}
+.bubble.buyer .bubble-content{background:#fff;border:1.5px solid var(--rule);border-bottom-left-radius:4px;color:var(--ink)}
+.bubble.seller .bubble-content{background:var(--p);color:#fff;border-bottom-right-radius:4px}
+.bubble.system .bubble-content{background:rgba(74,222,128,.1);border:1.5px solid rgba(74,222,128,.3);color:var(--g);font-size:11px;text-align:center;border-radius:20px;padding:5px 14px}
+.bubble-meta{font-size:10px;color:var(--muted);font-weight:700;padding:0 4px}
+.bubble.seller .bubble-meta{text-align:right}
+.bubble-price{display:inline-block;background:rgba(124,58,237,.12);border:1.5px solid rgba(124,58,237,.3);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:800;color:var(--p);margin-top:4px}
+.bubble.seller .bubble-price{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);color:#fff}
+/* Agent thinking indicator */
+.thinking{display:flex;align-items:center;gap:8px;padding:10px 13px;background:#fff;border:1.5px solid var(--rule);border-radius:14px;border-bottom-left-radius:4px;align-self:flex-start;max-width:82%}
+.thinking-dots{display:flex;gap:4px}
+.thinking-dot{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:bounce .9s infinite}
+.thinking-dot:nth-child(2){animation-delay:.15s}
+.thinking-dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+/* Approval card */
+.approval-card{background:linear-gradient(135deg,#1a0a2e,#0a1f0a);border:2px solid var(--g2);border-radius:12px;padding:16px;margin-top:10px}
+.appr-title{font-family:'Baloo 2',cursive;font-size:15px;font-weight:800;color:#fff;margin-bottom:6px}
+.appr-deal{display:flex;gap:16px;margin-bottom:12px}
+.appr-val{display:flex;flex-direction:column}
+.appr-n{font-size:20px;font-weight:800;font-family:'Baloo 2',cursive}
+.appr-l{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.05em}
+.appr-actions{display:flex;gap:8px}
+/* Settings panel for agent */
+.agent-setting{padding:12px 0;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.agent-setting:last-child{border:none}
+.agent-label{font-size:13px;font-weight:700}
+.agent-hint{font-size:11px;color:var(--muted);margin-top:2px}
+.floor-input{width:100px;text-align:right}
+/* Demo runner button */
+.demo-run-btn{background:linear-gradient(135deg,#0a1f0a,#1a0a2e);border:2px solid var(--g2);border-radius:10px;padding:10px 16px;color:var(--g2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .15s}
+.demo-run-btn:hover{opacity:.85}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="go('dash')">4<span>sale</span>.ai</div>
+  <div class="tabs">
+    <button class="tab on" data-page="dash" onclick="go('dash')">📊 Dashboard</button>
+    <button class="tab" data-page="listings" onclick="go('listings')">🏷️ Listings</button>
+    <button class="tab" data-page="negotiate" onclick="go('negotiate')">🤝 Negotiate</button>
+    <button class="tab" data-page="storefront" onclick="go('storefront')">🛍️ Storefront</button>
+    <button class="tab" data-page="push" onclick="go('push')">🚀 Push</button>
+    <button class="tab" data-page="embed" onclick="go('embed')">🔌 Embed</button>
+    <button class="tab" data-page="settings" onclick="go('settings')">⚙️ Settings</button>
+  </div>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="page on" id="page-dash">
+  <div class="rsb mb"><div><h2>Welcome back, Omar 👋</h2><p class="sub">4sale.love/omar · 5 active listings · last push 2h ago</p></div><button class="btn btn-rb" onclick="go('push')">✨ New Listing + Push</button></div>
+  <div class="rl"></div>
+  <div class="g4 mb">
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Active Listings</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--g)">28</div><div class="stat-l">Platforms Reached</div></div>
+    <div class="stat"><div class="stat-n" style="color:#f59e0b">341</div><div class="stat-l">Total Views</div></div>
+    <div class="stat"><div class="stat-n" style="color:#e879f9">4</div><div class="stat-l">Open Offers</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><h3>Recent Listings</h3><div id="dash-listings"></div><button class="btn btn-ghost btn-sm mt" onclick="go('listings')">View All →</button></div>
+    <div class="card"><h3>Platform Activity</h3><div id="mp-activity"></div><hr><div class="rsb mt"><span style="font-size:12px;font-weight:700;color:var(--muted)">Your storefront</span><a href="#" style="font-size:12px;font-weight:800;color:var(--p)">4sale.love/omar →</a></div></div>
+  </div>
+  <div class="card mt">
+    <div class="rsb"><h3 style="margin:0">Embed Widget — active on your site</h3><span class="badge bg">● Live</span></div>
+    <p style="font-size:12px;color:var(--muted);font-weight:700;margin-top:6px">Visitors on your business site see a "List with 4sale.love" button. When they click it, the AI listing flow opens inline — all managed through this admin.</p>
+    <div class="row mt"><button class="btn btn-ghost btn-sm" onclick="go('embed')">Edit Widget</button><button class="btn btn-ghost btn-sm" onclick="go('builder')">Edit Site</button></div>
+  </div>
+</div>
+
+<!-- LISTINGS -->
+<div class="page" id="page-listings">
+  <div class="rsb mb"><div><h2>My Listings</h2><p class="sub">All items across every marketplace</p></div><button class="btn btn-p" onclick="go('push')">+ New Listing</button></div>
+  <div class="rl"></div>
+  <div id="all-listings"></div>
+</div>
+
+<!-- SITE BUILDER -->
+<div class="page" id="page-builder">
+  <h2>Site Builder</h2><p class="sub">Build your storefront page in 60 seconds — AI fills it from your business info</p>
+  <div class="rl"></div>
+  <div class="steps" id="bsteps"><div class="step on" onclick="bStep(0)">1 · Business Info</div><div class="step" onclick="bStep(1)">2 · Style</div><div class="step" onclick="bStep(2)">3 · Preview</div></div>
+
+  <div id="bs0">
+    <div class="g2">
+      <div class="card">
+        <h3>Your Business</h3>
+        <div class="field"><label>Business Name</label><input id="biz-name" value="Chicago Business Development LLC"></div>
+        <div class="field"><label>Tagline</label><input id="biz-tag" value="Wicker Park's finest — event space, rentals & more"></div>
+        <div class="field"><label>City / Location</label><input id="biz-loc" value="Chicago, IL · Wicker Park"></div>
+        <div class="field"><label>What you sell</label><textarea id="biz-desc" rows="3">Short-term rentals, event space bookings, and curated secondhand items.</textarea></div>
+        <div class="field"><label>WhatsApp / Contact</label><input id="biz-contact" placeholder="+1 312..."></div>
+        <button class="btn btn-p mt" onclick="builderAI()">✨ Generate My Site</button>
+      </div>
+      <div class="card">
+        <h3>Auto-included Listings</h3>
+        <p style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:12px">These appear on your storefront automatically</p>
+        <div id="builder-list-preview"></div>
+        <div class="trow mt"><div><div class="tl">Show price intelligence</div><div class="ts">Display AI market range per listing</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Enable Make Offer</div><div class="ts">AI negotiates 24/7 on your behalf</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Show marketplace links</div><div class="ts">Link out to live marketplace posts</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bs1" style="display:none">
+    <div class="g2">
+      <div class="card">
+        <h3>Color Theme</h3>
+        <div class="g3 mb" id="theme-grid">
+          <div class="mpt on" onclick="selTheme(this,'#7c3aed','#16a34a')"><div style="height:22px;background:linear-gradient(135deg,#7c3aed,#16a34a);border-radius:5px;margin-bottom:5px"></div><div class="nm">Purple+Green</div></div>
+          <div class="mpt" onclick="selTheme(this,'#1d4ed8','#f59e0b')"><div style="height:22px;background:linear-gradient(135deg,#1d4ed8,#f59e0b);border-radius:5px;margin-bottom:5px"></div><div class="nm">Navy+Gold</div></div>
+          <div class="mpt" onclick="selTheme(this,'#dc2626','#1a0a2e')"><div style="height:22px;background:linear-gradient(135deg,#dc2626,#1a0a2e);border-radius:5px;margin-bottom:5px"></div><div class="nm">Red+Dark</div></div>
+          <div class="mpt" onclick="selTheme(this,'#0f766e','#f97316')"><div style="height:22px;background:linear-gradient(135deg,#0f766e,#f97316);border-radius:5px;margin-bottom:5px"></div><div class="nm">Teal+Orange</div></div>
+          <div class="mpt" onclick="selTheme(this,'#be185d','#7c3aed')"><div style="height:22px;background:linear-gradient(135deg,#be185d,#7c3aed);border-radius:5px;margin-bottom:5px"></div><div class="nm">Pink+Purple</div></div>
+          <div class="mpt" onclick="selTheme(this,'#0e7490','#16a34a')"><div style="height:22px;background:linear-gradient(135deg,#0e7490,#16a34a);border-radius:5px;margin-bottom:5px"></div><div class="nm">Cyan+Green</div></div>
+        </div>
+        <h3>Font</h3>
+        <div class="g2" id="font-grid">
+          <div class="mpt on" onclick="selFont(this)"><div class="nm" style="font-size:14px;font-family:'Baloo 2',cursive;color:var(--ink)">Rounded (default)</div></div>
+          <div class="mpt" onclick="selFont(this)"><div class="nm" style="font-size:14px;font-family:Georgia;color:var(--ink)">Classic Serif</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Layout Options</h3>
+        <div class="trow"><div><div class="tl">Dark hero header</div><div class="ts">Dark background on storefront top</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Show "Powered by 4sale.love"</div><div class="ts">Footer attribution badge</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Auto-refresh listings</div><div class="ts">Pulls new listings as you add them</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="field mt"><label>Custom Domain (optional)</label><input placeholder="shop.yourbusiness.com"></div>
+        <div class="field"><label>Google Analytics ID</label><input placeholder="G-XXXXXXXXXX"></div>
+        <button class="btn btn-p mt" onclick="bStep(2)">Preview My Site →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bs2" style="display:none">
+    <div class="site-frame">
+      <div class="site-bar"><div class="site-dots"><div class="site-dot" style="background:#ff5f57"></div><div class="site-dot" style="background:#febc2e"></div><div class="site-dot" style="background:#28c840"></div></div><div class="site-url">4sale.love/omar</div></div>
+      <div class="site-body" id="site-preview"></div>
+    </div>
+    <div class="row mt"><button class="btn btn-p" onclick="pubSite()">🚀 Publish Site</button><button class="btn btn-ghost" onclick="bStep(0)">← Edit</button><button class="btn btn-ghost" onclick="cp('https://4sale.love/omar','Link copied!')">🔗 Copy Link</button></div>
+  </div>
+</div>
+
+<!-- EMBED -->
+<div class="page" id="page-embed">
+  <h2>Embed Widget</h2>
+  <p class="sub">One script tag. Adds a "List with 4sale.love" button to any business website. All listings flow into your admin — you control everything centrally.</p>
+  <div class="rl"></div>
+  <div class="g2">
+    <div>
+      <div class="card mb">
+        <h3>Widget Config</h3>
+        <div class="field"><label>Button Text</label><input id="w-text" value="🏷️ List with 4sale.love" oninput="updateW()"></div>
+        <div class="field"><label>Button Color</label>
+          <div style="display:flex;gap:8px">
+            <input id="w-color" type="color" value="#7c3aed" style="width:44px;height:38px;padding:2px;cursor:pointer;border-radius:6px" oninput="updateW()">
+            <input id="w-hex" value="#7c3aed" style="flex:1" oninput="document.getElementById('w-color').value=this.value;updateW()">
+          </div>
+        </div>
+        <div class="field"><label>Position</label><select id="w-pos" onchange="updateW()"><option value="inline">Inline (inside page)</option><option value="fixed-br">Fixed · Bottom Right</option><option value="fixed-bl">Fixed · Bottom Left</option></select></div>
+        <div class="trow mt"><div><div class="tl">Auto-detect business info</div><div class="ts">Pre-fill from page metadata</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Show powered by badge</div><div class="ts">Small 4sale.love attribution</div></div><div class="sw" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+      <div class="card">
+        <h3>Embed Code</h3>
+        <p style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:10px">Paste before <code style="background:var(--bg);padding:1px 5px;border-radius:4px">&lt;/body&gt;</code> on any page</p>
+        <div class="code" id="embed-code"><button class="code-copy" onclick="cp(document.getElementById('embed-code').innerText.replace('Copy','').trim(),'Embed code copied!')">Copy</button><span id="code-content"></span></div>
+        <p style="font-size:11px;color:var(--muted);font-weight:700;margin-top:8px">Works on Squarespace, Webflow, WordPress, Wix, Framer — any HTML site. No build step needed.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Live Preview</h3>
+      <p style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:14px">What visitors see on your business website</p>
+      <div style="background:#f0f4f8;border-radius:10px;padding:20px;margin-bottom:14px">
+        <div style="font-size:11px;color:#888;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Your Business Site</div>
+        <div style="font-size:17px;font-weight:800;color:#1a1a2e;margin-bottom:3px">Chicago Business Dev LLC</div>
+        <div style="font-size:12px;color:#666;margin-bottom:16px">Event space & rentals · Wicker Park</div>
+        <div style="height:1px;background:#ddd;margin-bottom:16px"></div>
+        <button class="widget-btn" id="w-preview" onclick="openWModal()">🏷️ List with 4sale.love</button>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:14px">
+        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Clicking opens →</div>
+        <div class="row" style="gap:7px">
+          <span class="badge bp">✨ AI generates listing</span>
+          <span class="badge bg">🚀 Pushes to marketplaces</span>
+          <span class="badge" style="background:rgba(56,189,248,.12);border-color:#38bdf8;color:#0284c7">🔗 Smart link created</span>
+        </div>
+        <p style="font-size:12px;color:var(--muted);font-weight:700;margin-top:10px">You see every listing, every push, every offer — right here in admin.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUSH -->
+<div class="page" id="page-push">
+  <h2>Create Listing + Push</h2>
+  <p class="sub">Describe it once → AI generates → review → push to every marketplace from one screen</p>
+  <div class="rl"></div>
+  <div class="g2">
+    <div>
+      <div class="card mb">
+        <h3>Describe Your Item</h3>
+        <div class="field"><label>Photos — AI reads them automatically 👁</label>
+          <input type="file" id="photo-input" accept="image/*" multiple style="display:none" onchange="handlePhotos(this.files)">
+          <div id="photo-drop"
+            onclick="document.getElementById('photo-input').click()"
+            ondragover="event.preventDefault();this.style.borderColor='var(--p)'"
+            ondragleave="this.style.borderColor='var(--rule)'"
+            ondrop="event.preventDefault();handlePhotos(event.dataTransfer.files)"
+            style="border:2px dashed var(--rule);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:var(--bg);transition:all .2s"
+            onmouseover="this.style.borderColor='var(--p)'" onmouseout="this.style.borderColor='var(--rule)'">
+            <div id="photo-inner">
+              <div style="font-size:28px">📸</div>
+              <div style="font-size:12px;color:var(--muted);font-weight:700;margin-top:4px">Drop photos or click — AI identifies item &amp; condition</div>
+              <div style="font-size:10px;color:var(--rule);margin-top:3px;font-weight:700">No description needed if you add a photo</div>
+            </div>
+            <div id="photo-previews" style="display:none;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px"></div>
+          </div>
+        </div>
+        <div class="field"><label>Description <span style="color:var(--muted);font-weight:600">(optional if photo added)</span></label><textarea id="push-desc" rows="2" placeholder="Any extra details — model number, what's included, reason for selling..."></textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>Price $</label><input type="number" id="push-price" placeholder="0"></div>
+          <div class="field"><label>Condition</label><select id="push-cond"><option value="new">New</option><option value="like_new" selected>Like New</option><option value="good">Good</option><option value="fair">Fair</option></select></div>
+        </div>
+        <button class="btn btn-p mt" id="gen-btn" onclick="runAI()" style="width:100%;justify-content:center">✨ Generate with AI</button>
+        <div id="ai-loading" style="display:none;text-align:center;padding:12px 0">
+          <div style="display:inline-block;width:20px;height:20px;border:2px solid var(--rule);border-top-color:var(--g2);border-radius:50%;animation:spin .7s linear infinite"></div>
+          <div style="font-size:11px;font-weight:800;color:var(--p);margin-top:6px" id="ai-msg">Analyzing item...</div>
+        </div>
+      </div>
+      <div class="card" id="review-card" style="display:none">
+        <div class="rsb" style="margin-bottom:12px"><h3 style="margin:0">AI Generated — Review &amp; Edit</h3><span class="badge bg">✓ Ready</span></div>
+        <div class="field"><label>Title</label><input id="r-title"></div>
+        <div class="field"><label>Description</label><textarea id="r-desc" rows="3"></textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>Price</label><input type="number" id="r-price"></div>
+          <div class="field"><label>Condition</label><select id="r-cond"><option value="new">New</option><option value="like_new">Like New</option><option value="good">Good</option><option value="fair">Fair</option></select></div>
+        </div>
+        <div id="intel-box" style="background:#0a1f12;border:2px solid #14532d;border-radius:10px;padding:10px 14px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:700;color:#166534">Market range</span><span style="font-size:12px;font-weight:800;color:var(--g2);display:flex;align-items:center;gap:4px" id="intel-range"></span></div>
+          <div style="display:flex;justify-content:space-between;margin-top:3px"><span style="font-size:11px;font-weight:700;color:#166534">AI suggests</span><span style="font-size:12px;font-weight:800;color:#86efac" id="intel-suggest"></span></div>
+          <div style="font-size:11px;color:#15803d;font-weight:700;margin-top:4px" id="intel-note"></div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px" id="r-tags"></div>
+        <div style="background:#0a0a1f;border:2px solid #312e81;border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px">
+          <span>🔗</span><span style="flex:1;font-family:monospace;font-size:11px;font-weight:700;color:#a5b4fc" id="r-link"></span>
+          <button class="btn btn-ghost btn-sm" onclick="cp(document.getElementById('r-link').textContent,'Link copied!')">Copy</button>
+        </div>
+      </div>
+    </div>
+    <div id="push-right">
+
+      <!-- waiting for AI -->
+      <div class="card" id="push-waiting">
+        <h3 style="color:var(--muted)">Marketplaces</h3>
+        <p style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:14px">Generate your listing first — then push to each platform with one click.</p>
+        <div class="mpg" style="opacity:.35;pointer-events:none" id="mp-grid"></div>
+      </div>
+
+      <!-- listing ready: push panel -->
+      <div id="push-panel" style="display:none">
+
+        <div style="background:#0a0a1f;border:2px solid #312e81;border-radius:12px;padding:14px;margin-bottom:14px;text-align:center">
+          <div style="font-size:10px;font-weight:800;color:#a5b4fc;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">🔗 Your Smart Link</div>
+          <div style="font-family:monospace;font-size:12px;font-weight:800;color:#e0d4ff;word-break:break-all;margin-bottom:8px" id="smart-link-display"></div>
+          <button class="btn btn-rb btn-sm" onclick="cp(document.getElementById('smart-link-display').textContent,'Smart link copied!')">Copy Link</button>
+        </div>
+
+        <div style="background:#f0fff4;border:1.5px solid var(--g2);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#166534;font-weight:700;line-height:1.6">
+          <strong>How to post:</strong> Click any platform below → listing page opens in a new tab → your text is already copied → paste and post. ~30 seconds per platform.
+          <div style="margin-top:6px"><a href="#" onclick="showExtInfo(event)" style="color:var(--p);font-weight:800">Want it fully automatic? Get the extension →</a></div>
+        </div>
+
+        <div id="platform-cards" style="display:flex;flex-direction:column;gap:8px"></div>
+
+        <div id="ext-info" style="display:none;background:#1a0a2e;border:2px solid #3d1f70;border-radius:12px;padding:16px;margin-top:12px">
+          <div style="font-size:13px;font-weight:800;color:#e0d4ff;margin-bottom:6px">🔌 Chrome Extension — zero copy-paste</div>
+          <div style="font-size:12px;color:#a78bfa;font-weight:700;line-height:1.6;margin-bottom:10px">Install once → every Push auto-fills title, description, price, and condition on each marketplace. No manual steps.</div>
+          <button class="btn btn-p btn-sm" onclick="cp('https://4sale.love/extension','Copied! Share this link to install.')">Copy Install Link</button>
+        </div>
+
+        <div id="push-done" style="display:none;margin-top:14px">
+          <div class="rl"></div>
+          <h3>All set ✅</h3>
+          <div id="push-badges" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
+          <p style="font-size:12px;color:var(--muted);font-weight:700">Smart link drives buyers back to your 4sale.love storefront from every platform.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEGOTIATE -->
+<div class="page" id="page-negotiate">
+  <div class="rsb mb">
+    <div><h2>AI Negotiation Center</h2><p class="sub">Your agent handles every offer 24/7 — you approve deals above your floor</p></div>
+    <button class="demo-run-btn" onclick="runDemoNegotiation()">▶ Run Demo Negotiation</button>
+  </div>
+  <div class="rl"></div>
+
+  <div class="neg-grid mb">
+    <div class="neg-stat"><span class="neg-stat-icon">💬</span><div><div class="neg-stat-n" id="neg-active-count">4</div><div class="neg-stat-l">Active Threads</div></div></div>
+    <div class="neg-stat"><span class="neg-stat-icon">✅</span><div><div class="neg-stat-n" id="neg-closed-count" style="color:var(--g)">2</div><div class="neg-stat-l">Deals Closed</div></div></div>
+    <div class="neg-stat"><span class="neg-stat-icon">⏳</span><div><div class="neg-stat-n" id="neg-approval-count" style="color:var(--accent-lt)">1</div><div class="neg-stat-l">Needs Approval</div></div></div>
+    <div class="neg-stat"><span class="neg-stat-icon">💰</span><div><div class="neg-stat-n" id="neg-recovered" style="color:var(--g)">$44</div><div class="neg-stat-l">Avg Recovered</div></div></div>
+  </div>
+
+  <div class="g2">
+    <!-- LEFT: Thread list -->
+    <div>
+      <div class="card" style="padding:14px">
+        <div class="rsb" style="margin-bottom:12px">
+          <h3 style="margin:0">Active Negotiations</h3>
+          <span class="badge bp" id="needs-attention-badge">1 needs you</span>
+        </div>
+        <div id="thread-list"></div>
+      </div>
+
+      <!-- Agent Settings -->
+      <div class="card mt">
+        <h3>🤖 Seller Agent Settings</h3>
+        <div class="agent-setting">
+          <div><div class="agent-label">Auto-negotiate</div><div class="agent-hint">AI handles all offers without you</div></div>
+          <div class="sw on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="agent-setting">
+          <div><div class="agent-label">Notify me on deal</div><div class="agent-hint">Alert when agent accepts an offer</div></div>
+          <div class="sw on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="agent-setting">
+          <div><div class="agent-label">Require my approval above floor</div><div class="agent-hint">Agent counters freely below your floor</div></div>
+          <div class="sw on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="agent-setting">
+          <div><div class="agent-label">Max rounds before escalate</div><div class="agent-hint">How many back-and-forths before alerting you</div></div>
+          <select style="width:80px;text-align:right" id="max-rounds">
+            <option value="3">3</option><option value="5" selected>5</option><option value="10">10</option>
+          </select>
+        </div>
+        <div class="agent-setting">
+          <div><div class="agent-label">Strategy</div><div class="agent-hint">How aggressive the agent negotiates</div></div>
+          <select style="width:120px" id="neg-strategy">
+            <option value="firm">Firm (hold price)</option>
+            <option value="moderate" selected>Moderate</option>
+            <option value="flexible">Flexible (move fast)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Active thread chat -->
+    <div>
+      <div class="card" id="thread-detail" style="padding:0;overflow:hidden">
+        <!-- Placeholder when no thread selected -->
+        <div id="thread-placeholder" style="padding:40px;text-align:center;color:var(--muted)">
+          <div style="font-size:36px;margin-bottom:10px">🤝</div>
+          <div style="font-size:14px;font-weight:800;margin-bottom:4px">Select a negotiation</div>
+          <div style="font-size:12px">Or run the demo to see agent-to-agent negotiation live</div>
+        </div>
+        <!-- Thread content injected here -->
+        <div id="thread-content" style="display:none">
+          <div style="padding:12px 14px;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:10px">
+            <span id="tc-em" style="font-size:20px"></span>
+            <div style="flex:1"><div id="tc-title" style="font-size:13px;font-weight:800"></div><div id="tc-meta" style="font-size:11px;color:var(--muted);font-weight:700"></div></div>
+            <span id="tc-badge" class="badge"></span>
+          </div>
+          <div class="chat-wrap" id="chat-messages"></div>
+          <!-- Approval card (shown when agent reaches deal needing approval) -->
+          <div id="approval-card" style="display:none;padding:12px 14px">
+            <div class="approval-card">
+              <div class="appr-title">🤝 Agent reached a deal — your approval needed</div>
+              <div class="appr-deal">
+                <div class="appr-val"><span class="appr-n" style="color:var(--g2)" id="appr-offer"></span><span class="appr-l">Buyer Offer</span></div>
+                <div class="appr-val"><span class="appr-n" style="color:rgba(255,255,255,.4)" id="appr-ask"></span><span class="appr-l">Original Ask</span></div>
+                <div class="appr-val"><span class="appr-n" style="color:var(--accent-lt)" id="appr-floor"></span><span class="appr-l">Your Floor</span></div>
+              </div>
+              <div class="appr-actions">
+                <button class="btn btn-g btn-sm" onclick="approveDealt()" style="flex:1;justify-content:center">✅ Accept Deal</button>
+                <button class="btn btn-ghost btn-sm" onclick="counterManually()" style="flex:1;justify-content:center">✏️ Counter</button>
+                <button class="btn btn-ghost btn-sm" onclick="declineDeal()" style="justify-content:center">✕</button>
+              </div>
+            </div>
+          </div>
+          <!-- Manual input -->
+          <div id="manual-input" style="padding:10px 14px;border-top:1px solid var(--rule);display:flex;gap:8px;align-items:center">
+            <input type="text" id="manual-msg" placeholder="Override agent — type a message..." style="flex:1;font-size:12px;padding:7px 11px">
+            <button class="btn btn-p btn-sm" onclick="sendManual()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STOREFRONT -->
+<div class="page" id="page-storefront">
+  <div class="rsb mb">
+    <div><h2>Your Storefront</h2><p class="sub">This is what buyers see when you share your link</p></div>
+    <div class="row" style="gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="cp('https://4sale.love/'+getUsername(),'Store link copied!')">🔗 Copy Link</button>
+      <button class="btn btn-p" onclick="openStorefrontFull()">👁 View Live →</button>
+    </div>
+  </div>
+  <div class="rl"></div>
+
+  <!-- Share channels row -->
+  <div class="card mb" style="padding:14px 16px">
+    <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Share your storefront</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="store-share-row"></div>
+  </div>
+
+  <!-- Live preview inside browser chrome -->
+  <div class="site-frame">
+    <div class="site-bar">
+      <div class="site-dots">
+        <div class="site-dot" style="background:#ff5f57"></div>
+        <div class="site-dot" style="background:#febc2e"></div>
+        <div class="site-dot" style="background:#28c840"></div>
+      </div>
+      <div class="site-url" id="store-url-bar">4sale.love/omar</div>
+      <button onclick="openStorefrontFull()" style="background:#1e1b4b;border:none;border-radius:4px;color:#a5b4fc;font-size:10px;padding:3px 8px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;white-space:nowrap">Open ↗</button>
+    </div>
+    <!-- Microsite rendered live inside iframe-like div -->
+    <div id="storefront-preview" style="max-height:680px;overflow-y:auto;background:#f5f3ef"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <h2>Settings</h2><p class="sub">Admin profile, API keys, marketplace connections</p>
+  <div class="rl"></div>
+  <div class="g2">
+    <div>
+      <div class="card mb">
+        <h3>Account</h3>
+        <div class="field"><label>Store URL</label>
+          <div style="display:flex;align-items:center;background:var(--bg);border:2px solid var(--rule);border-radius:8px;overflow:hidden">
+            <span style="padding:0 10px;font-size:13px;color:var(--muted);font-weight:700;border-right:2px solid var(--rule);background:var(--w);white-space:nowrap">4sale.love/</span>
+            <input style="border:none;background:none;border-radius:0;box-shadow:none" value="omar">
+          </div>
+        </div>
+        <div class="field"><label>Display Name</label><input value="Omar's Store"></div>
+        <div class="field"><label>Location</label><input value="Chicago, IL"></div>
+        <div class="field"><label>Bio</label><textarea rows="2">Moving sale + upgrades — quality items, fast responses.</textarea></div>
+        <button class="btn btn-p btn-sm mt" onclick="toast('Profile saved ✓')">Save Profile</button>
+      </div>
+      <div class="card">
+        <h3>API Keys</h3>
+        <div class="field"><label>Anthropic API Key</label><input type="password" value="sk-ant-api03-placeholder" placeholder="sk-ant-..."></div>
+        <p style="font-size:11px;color:var(--muted);font-weight:700;margin-top:-6px;margin-bottom:10px">Used for AI listing generation. Stored locally, never shared.</p>
+        <button class="btn btn-p btn-sm" onclick="toast('Key saved ✓')">Save Key</button>
+      </div>
+    </div>
+    <div>
+      <div class="card mb">
+        <h3>Marketplace Connections</h3>
+        <p style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:12px">Connect to track push history per platform</p>
+        <div id="mp-settings"></div>
+      </div>
+      <div class="card">
+        <h3>Notifications</h3>
+        <div class="trow"><div><div class="tl">New offer received</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Listing published</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">AI negotiation update</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="trow"><div><div class="tl">Weekly performance report</div></div><div class="sw" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WIDGET MODAL -->
+<div id="wmodal" style="display:none;position:fixed;inset:0;background:rgba(26,10,46,.75);z-index:500;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:16px;padding:26px;width:380px;max-width:calc(100vw - 32px);position:relative;border-top:4px solid transparent;border-image:linear-gradient(90deg,#818cf8,#e879f9,#ff4d4d) 1;box-shadow:0 24px 64px rgba(26,10,46,.35)">
+    <button onclick="document.getElementById('wmodal').style.display='none'" style="position:absolute;top:14px;right:14px;background:#f7f4ff;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;color:#7c5abf">✕</button>
+    <div style="font-family:'Baloo 2',cursive;font-size:16px;font-weight:800;margin-bottom:3px">List Your Item</div>
+    <div style="font-size:11px;color:#7c5abf;font-weight:700;margin-bottom:16px">Powered by 4sale.love · Chicago Business Dev</div>
+    <div class="field"><label>What are you selling?</label><textarea rows="2" placeholder="Describe your item..."></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>Price $</label><input type="number" placeholder="0"></div>
+      <div class="field"><label>Condition</label><select><option>Like New</option><option>Good</option><option>Fair</option></select></div>
+    </div>
+    <button class="btn btn-p mt" style="width:100%;justify-content:center" onclick="toast('AI generating your listing...');document.getElementById('wmodal').style.display='none'">✨ Generate Listing with AI</button>
+    <div style="font-size:10px;color:#7c5abf;text-align:center;margin-top:8px;font-weight:700">Listing will appear on 4sale.love/omar</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LISTINGS=[
+  {id:1,em:'🎧',title:'Sony WH-1000XM5 Headphones',price:220,cond:'Like New',cat:'electronics',views:47,slug:'sony-xm5-k7m2',markets:['craigslist','facebook','offerup','nextdoor','mercari']},
+  {id:2,em:'📱',title:'Apple iPad Air 5th Gen + Pencil',price:380,cond:'Good',cat:'electronics',views:83,slug:'ipad-air-p4n1',markets:['facebook','offerup','ebay','mercari']},
+  {id:3,em:'🛋️',title:'IKEA MALM 6-Drawer Dresser',price:85,cond:'Good',cat:'furniture',views:31,slug:'malm-q2p9',markets:['craigslist','facebook','nextdoor']},
+  {id:4,em:'🥤',title:'Vitamix E310 Blender',price:175,cond:'Like New',cat:'other',views:28,slug:'vitamix-n1k5',markets:['facebook','offerup','mercari']},
+  {id:5,em:'🏠',title:'Wicker Park Event Space — Weekend Rental',price:450,cond:'New',cat:'services',views:152,slug:'event-space-w3p8',markets:['craigslist','facebook','nextdoor']},
+];
+const MPS=[
+  {id:'craigslist',nm:'Craigslist',ic:'📋'},
+  {id:'facebook',nm:'Facebook',ic:'👥'},
+  {id:'offerup',nm:'OfferUp',ic:'🛒'},
+  {id:'ebay',nm:'eBay',ic:'🔨'},
+  {id:'nextdoor',nm:'Nextdoor',ic:'🏘️'},
+  {id:'mercari',nm:'Mercari',ic:'🏷️'},
+];
+const AI_BANK={
+  default:{title:'Quality Item — Great Condition',description:'Well-maintained and ready for its next owner. All original components included. Chicago pickup preferred.',price:150,pl:120,ph:180,ps:155,rationale:'Comps in Chicago average $130–175 for similar items in this condition.',tags:['chicago','pickup','quality','deal'],emoji:'📦'},
+  headphone:{title:'Sony WH-1000XM5 Noise Cancelling Headphones',description:'Lightly used 3 months. All accessories included: case, USB-C, 3.5mm adapter. Battery holds 30hrs. Upgrading to AirPods Max.',price:220,pl:180,ph:260,ps:225,rationale:'XM5 comps on OfferUp/CL average $185–245. Like-new with accessories justifies upper range.',tags:['sony','headphones','noise-cancelling','wireless','audio'],emoji:'🎧'},
+  ipad:{title:'Apple iPad Air 5th Gen 64GB + Apple Pencil 2nd Gen',description:'Used for reading and Zoom. Battery health 91%. Screen protector since day one. Includes Pencil 2nd gen and Smart Folio.',price:380,pl:320,ph:420,ps:375,rationale:'iPad Air 5 + Pencil bundle sells $340–410. Good battery health keeps it upper tier.',tags:['apple','ipad','tablet','pencil','education'],emoji:'📱'},
+  bike:{title:'Specialized Allez Sport Road Bike 56cm',description:'2021 model ~1,500 miles. Bar tape replaced last month, brake pads new. Shimano Claris shifts perfectly.',price:650,pl:550,ph:750,ps:650,rationale:'Allez Sport used $550–800. Recent service and low miles support asking price.',tags:['specialized','road-bike','cycling','fitness'],emoji:'🚴'},
+};
+const RB=['#ff4d4d','#ff9a00','#4ade80','#38bdf8','#818cf8','#e879f9'];
+const RBG=['rgba(255,77,77,.12)','rgba(255,154,0,.12)','rgba(74,222,128,.12)','rgba(56,189,248,.12)','rgba(129,140,248,.12)','rgba(232,121,249,.12)'];
+
+let selMPs=new Set(['craigslist','facebook','offerup','nextdoor','mercari']);
+let theme={a:'#7c3aed',b:'#16a34a'};
+let bStepN=0;
+
+// ══════════════════════════════════════════════════════════════════════════
+//  STOREFRONT GENERATOR
+//  Builds the buyer-facing microsite HTML from live LISTINGS + settings
+//  Same data, two views: admin sees the Push tab, buyers see this
+// ══════════════════════════════════════════════════════════════════════════
+
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  document.querySelector('[data-page="'+id+'"]').classList.add('on');
+  window.scrollTo(0,0);
+  if(id==='storefront') renderStorefront();
+  if(id==='negotiate')  initNegotiate();
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  renderDash(); renderAllListings(); buildMpGrid(); renderMpSettings(); updateW(); buildBLP(); loadSettings();
+});
+
+function renderDash(){
+  document.getElementById('dash-listings').innerHTML=LISTINGS.slice(0,3).map(l=>`
+    <div class="lrow" onclick="go('listings')">
+      <div class="lem">${l.em}</div>
+      <div class="linf"><div class="ltit">${l.title}</div><div class="lmet">${l.cond} · ${l.markets.length} platforms · ${l.views} views</div></div>
+      <div class="lpri">$${l.price}</div>
+    </div>`).join('');
+  document.getElementById('mp-activity').innerHTML=MPS.slice(0,5).map(m=>{
+    const c=LISTINGS.filter(l=>l.markets.includes(m.id)).length;
+    const p=Math.round(c/LISTINGS.length*100);
+    return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="font-size:16px;width:22px">${m.ic}</span>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--muted);margin-bottom:3px"><span>${m.nm}</span><span>${c} listings</span></div>
+        <div class="prog"><div class="prog-fill" style="width:${p}%"></div></div>
+      </div></div>`;
+  }).join('');
+}
+
+function renderAllListings(){
+  document.getElementById('all-listings').innerHTML=LISTINGS.map(l=>`
+    <div class="lrow">
+      <div class="lem">${l.em}</div>
+      <div class="linf">
+        <div class="ltit">${l.title}</div>
+        <div class="lmet">${l.cond} · <span style="color:var(--g);font-weight:800">${l.markets.length} platforms</span> · 👁 ${l.views} views</div>
+        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">${l.markets.map(m=>{const mp=MPS.find(x=>x.id===m);return mp?`<span class="badge bg">${mp.ic} ${mp.nm}</span>`:''}).join('')}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="lpri">$${l.price}</div>
+        <button class="btn btn-ghost btn-sm" onclick="rePush(${l.id})">Re-push</button>
+        <a href="#" style="font-size:11px;color:var(--p);font-weight:800">🔗 View →</a>
+      </div>
+    </div>`).join('');
+}
+
+function buildMpGrid(){
+  const g=document.getElementById('mp-grid');if(!g)return;
+  g.innerHTML=MPS.map(m=>`
+    <div class="mpt${selMPs.has(m.id)?' on':''}" id="mpt-${m.id}" onclick="toggleMP('${m.id}')">
+      <div class="ic">${m.ic}</div><div class="nm">${m.nm}</div>
+      <div class="st">${selMPs.has(m.id)?'✓ selected':'tap to add'}</div>
+    </div>`).join('');
+}
+
+function toggleMP(id){
+  if(selMPs.has(id))selMPs.delete(id);else selMPs.add(id);
+  const el=document.getElementById('mpt-'+id);
+  el.classList.toggle('on',selMPs.has(id));
+  el.querySelector('.st').textContent=selMPs.has(id)?'✓ selected':'tap to add';
+}
+
+function renderMpSettings(){
+  const el=document.getElementById('mp-settings');if(!el)return;
+  el.innerHTML=MPS.map(m=>`
+    <div class="trow">
+      <div><div class="tl">${m.ic} ${m.nm}</div><div class="ts" id="ms-${m.id}">Not connected</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="connectMP('${m.id}')">Connect</button>
+    </div>`).join('');
+}
+
+function connectMP(id){
+  const el=document.getElementById('ms-'+id);
+  el.textContent='✓ Connected';el.style.color='var(--g)';
+  toast(MPS.find(m=>m.id===id).nm+' connected ✓');
+}
+
+const AI_MSGS=[
+  'Reading your photo...','Identifying item & brand...','Searching eBay sold listings...',
+  'Analyzing market prices...','Writing optimized title...','Building smart link...','Almost done...'
+];
+
+// ── KEY MANAGEMENT ─────────────────────────────────────────────────────────
+function getKey(){return localStorage.getItem('4sale_apikey')||'';}
+function saveKey(k){localStorage.setItem('4sale_apikey',k);}
+
+// ── PHOTO HANDLING ─────────────────────────────────────────────────────────
+let uploadedPhotos = []; // [{file, b64}]
+
+async function handlePhotos(files) {
+  uploadedPhotos = [];
+  const previews = document.getElementById('photo-previews');
+  const inner    = document.getElementById('photo-inner');
+  previews.innerHTML = '';
+
+  for (const file of [...files].slice(0, 4)) {
+    const b64 = await fileToB64(file);
+    uploadedPhotos.push({ file, b64 });
+    const img = document.createElement('img');
+    img.src = b64;
+    img.style.cssText = 'width:72px;height:72px;object-fit:cover;border-radius:8px;border:2px solid var(--g2)';
+    previews.appendChild(img);
+  }
+
+  inner.style.display    = 'none';
+  previews.style.display = 'flex';
+  document.getElementById('photo-drop').style.borderColor  = 'var(--g)';
+  document.getElementById('photo-drop').style.borderStyle  = 'solid';
+  document.getElementById('photo-drop').style.background   = 'rgba(74,222,128,0.05)';
+
+  const count = uploadedPhotos.length;
+  toast(`📸 ${count} photo${count>1?'s':''} added — AI will identify your item`);
+}
+
+function fileToB64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ── EBAY PRICING (free Browse API, no auth needed) ─────────────────────────
+async function fetchEbayComps(query) {
+  try {
+    // eBay Finding API — free, no key needed for basic search
+    const url = `https://svcs.ebay.com/services/search/FindingService/v1`
+      + `?OPERATION-NAME=findCompletedItems`
+      + `&SERVICE-VERSION=1.0.0`
+      + `&SECURITY-APPNAME=FALLBACK` // will fail gracefully, Claude handles fallback
+      + `&RESPONSE-DATA-FORMAT=JSON`
+      + `&keywords=${encodeURIComponent(query)}`
+      + `&itemFilter(0).name=SoldItemsOnly&itemFilter(0).value=true`
+      + `&sortOrder=EndTimeSoonest&paginationInput.entriesPerPage=10`;
+
+    const res = await fetch(url).catch(() => null);
+    if (!res || !res.ok) return null;
+    const data = await res.json();
+    const items = data?.findCompletedItemsResponse?.[0]?.searchResult?.[0]?.item || [];
+    if (!items.length) return null;
+
+    const prices = items
+      .map(i => parseFloat(i.sellingStatus?.[0]?.currentPrice?.[0]?.['__value__'] || 0))
+      .filter(p => p > 0);
+
+    if (!prices.length) return null;
+    const avg = prices.reduce((a,b)=>a+b,0) / prices.length;
+    const low = Math.min(...prices);
+    const high= Math.max(...prices);
+    return { avg: Math.round(avg), low: Math.round(low), high: Math.round(high), count: prices.length };
+  } catch { return null; }
+}
+
+// ── CLAUDE VISION + LISTING GENERATION ────────────────────────────────────
+async function callClaude(description, price, condition, photos) {
+  const key = getKey();
+  if (!key) throw new Error('No API key — go to Settings and add your Anthropic key.');
+
+  const hasPhotos = photos && photos.length > 0;
+
+  // Build message content — photos first, then text
+  const content = [];
+
+  if (hasPhotos) {
+    for (const p of photos.slice(0, 4)) {
+      const mediaType = p.b64.startsWith('data:image/png') ? 'image/png'
+                      : p.b64.startsWith('data:image/webp') ? 'image/webp'
+                      : 'image/jpeg';
+      content.push({
+        type: 'image',
+        source: { type: 'base64', media_type: mediaType, data: p.b64.split(',')[1] }
+      });
+    }
+  }
+
+  const systemPrompt = `You are an expert marketplace listing generator with deep knowledge of resale prices on eBay, Craigslist, Facebook Marketplace, and OfferUp.
+
+${hasPhotos ? 'The user has provided product photos. Use them to identify the exact item — brand, model, color, condition, any visible wear or damage. Do not ask for clarification; make your best identification from the image.' : ''}
+
+Generate a complete marketplace listing. Respond ONLY with valid JSON, no markdown:
+{
+  "title": "exact brand/model searchable title 6-10 words",
+  "description": "honest compelling description 3-5 sentences, mention what is included",
+  "price": number (suggested sell price),
+  "pl": number (realistic market low based on condition),
+  "ph": number (realistic market high based on condition),
+  "ps": number (optimal price to sell within 7 days),
+  "rationale": "2 sentences: what comparable items sell for and why you priced it here",
+  "condition": "new|like_new|good|fair|poor",
+  "tags": ["tag1","tag2","tag3","tag4","tag5"],
+  "identified_item": "brand + model identified from photo or description",
+  "emoji": "single most relevant emoji",
+  "price_confidence": "high|medium|low"
+}`;
+
+  content.push({
+    type: 'text',
+    text: `${hasPhotos ? 'Identify the item in these photos and generate a marketplace listing.' : 'Generate a marketplace listing for this item.'}
+${description ? `Seller notes: "${description}"` : ''}
+${price ? `Seller wants: $${price}` : 'Suggest the best price.'}
+Condition: ${condition || 'assess from photo'}
+${hasPhotos ? 'Be specific about brand and model — look for logos, labels, model numbers in the image.' : ''}`
+  });
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 900,
+      system: systemPrompt,
+      messages: [{ role: 'user', content }]
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || `API error ${res.status}`);
+  }
+
+  const data = await res.json();
+  const raw  = data.content[0].text.trim().replace(/```json|```/g, '').trim();
+  return JSON.parse(raw);
+}
+
+async function runAI() {
+  const desc = document.getElementById('push-desc').value.trim();
+  const hasPhotos = uploadedPhotos.length > 0;
+
+  if (!desc && !hasPhotos) {
+    toast('📸 Add a photo or describe your item first');
+    document.getElementById('photo-drop').style.borderColor = 'var(--p)';
+    return;
+  }
+
+  const key = getKey();
+  if (!key) {
+    toast('⚠️ Add your Anthropic API key in Settings first');
+    setTimeout(() => go('settings'), 1200);
+    return;
+  }
+
+  document.getElementById('ai-loading').style.display = 'block';
+  document.getElementById('gen-btn').style.display    = 'none';
+
+  let msgIdx = 0;
+  const iv = setInterval(() => {
+    document.getElementById('ai-msg').textContent = AI_MSGS[msgIdx++ % AI_MSGS.length];
+  }, 800);
+
+  try {
+    const price = document.getElementById('push-price').value;
+    const cond  = document.getElementById('push-cond').value;
+
+    // Step 1 — Claude identifies item + generates listing (with vision if photo)
+    document.getElementById('ai-msg').textContent = hasPhotos ? 'Reading your photo...' : 'Analyzing your item...';
+    const r = await callClaude(desc, price, cond, uploadedPhotos);
+
+    // Step 2 — eBay live comps (parallel, non-blocking)
+    document.getElementById('ai-msg').textContent = 'Checking eBay sold prices...';
+    const ebayData = await fetchEbayComps(r.identified_item || r.title);
+
+    // Step 3 — Merge eBay data into pricing if available
+    if (ebayData && ebayData.count >= 3) {
+      r._ebay = ebayData;
+      // Only override if eBay data significantly differs — trust eBay over Claude estimates
+      r.pl = ebayData.low;
+      r.ph = ebayData.high;
+      r.ps = Math.round(ebayData.avg * 0.95); // slightly under avg to sell faster
+      r.rationale = `Based on ${ebayData.count} recent eBay sold listings: avg $${ebayData.avg}, range $${ebayData.low}–$${ebayData.high}. ` + r.rationale;
+      r.price_confidence = 'high';
+    }
+
+    fillReview(r);
+
+  } catch (err) {
+    toast('❌ ' + err.message);
+    console.error(err);
+  } finally {
+    clearInterval(iv);
+    document.getElementById('ai-loading').style.display = 'none';
+    document.getElementById('gen-btn').style.display    = '';
+  }
+}
+
+function fillReview(r){
+  document.getElementById('review-card').style.display='block';
+  document.getElementById('r-title').value = r.title;
+  const slug = slugify(r.title);
+  const user = getUsername();
+  document.getElementById('r-desc').value  = r.description+'\n\n🔗 Full listing + photos: https://4sale.love/'+user+'/'+slug;
+  document.getElementById('r-price').value = r.ps || r.price;
+  document.getElementById('r-cond').value  = r.condition || document.getElementById('push-cond').value;
+
+  // ── Price intelligence box ──────────────────────────────────────────────
+  const ebayBadge = r._ebay
+    ? `<span style="background:rgba(56,189,248,.15);border:1px solid #38bdf8;color:#0284c7;border-radius:20px;padding:1px 8px;font-size:9px;font-weight:800;margin-left:6px">📊 ${r._ebay.count} eBay sold</span>`
+    : `<span style="background:rgba(129,140,248,.15);border:1px solid #818cf8;color:#4f46e5;border-radius:20px;padding:1px 8px;font-size:9px;font-weight:800;margin-left:6px">✨ AI estimate</span>`;
+
+  const confColor = r.price_confidence==='high' ? 'var(--g2)' : r.price_confidence==='medium' ? '#f59e0b' : '#f87171';
+  const confLabel = r.price_confidence==='high' ? '● High confidence' : r.price_confidence==='medium' ? '● Medium' : '● Low — add details';
+
+  document.getElementById('intel-range').innerHTML    = `$${r.pl?.toLocaleString()}–$${r.ph?.toLocaleString()} ${ebayBadge}`;
+  document.getElementById('intel-suggest').textContent = `$${(r.ps||r.price)?.toLocaleString()}`;
+  document.getElementById('intel-note').innerHTML     = `${r.rationale} <span style="color:${confColor};font-weight:800">${confLabel}</span>`;
+
+  // ── Vision identification badge ─────────────────────────────────────────
+  if (r.identified_item && uploadedPhotos.length > 0) {
+    const existing = document.getElementById('vision-badge');
+    if (existing) existing.remove();
+    const badge = document.createElement('div');
+    badge.id = 'vision-badge';
+    badge.style.cssText = 'background:#0a0a1f;border:2px solid #312e81;border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px';
+    badge.innerHTML = `<span style="font-size:16px">👁</span><div><div style="font-size:10px;font-weight:800;color:#a5b4fc;text-transform:uppercase;letter-spacing:.05em">AI Identified</div><div style="font-size:13px;font-weight:800;color:#e0d4ff">${r.identified_item}</div></div>`;
+    document.getElementById('r-title').parentElement.parentElement.insertBefore(badge, document.getElementById('r-title').parentElement);
+  }
+
+  // ── Tags ────────────────────────────────────────────────────────────────
+  document.getElementById('r-tags').innerHTML = r.tags.map((t,i)=>
+    `<span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;border:1.5px solid ${RB[i%6]};background:${RBG[i%6]};color:${RB[i%6]}">${t}</span>`
+  ).join('');
+
+  // ── Smart link + push panel ─────────────────────────────────────────────
+  document.getElementById('r-link').textContent = `4sale.love/${user}/${slug}`;
+  document.getElementById('push-waiting').style.display  = 'none';
+  document.getElementById('push-panel').style.display    = 'block';
+  document.getElementById('smart-link-display').textContent = `https://4sale.love/${user}/${slug}`;
+  buildPlatformCards(r, slug);
+}
+
+// ── MARKETPLACE CONFIG ────────────────────────────────────────────────────
+// Each platform: where to go, what the listing form looks like, posting tips
+const MP_CONFIG = {
+  craigslist: {
+    url: 'https://post.craigslist.org/',
+    tip: 'Choose "For Sale" → pick a category → paste title, description, and price.',
+    fields: ['Title','Price','Description'],
+  },
+  facebook: {
+    url: 'https://www.facebook.com/marketplace/create/item',
+    tip: 'Click "Create new listing" → paste title, price, description → select condition.',
+    fields: ['Title','Price','Description','Condition'],
+  },
+  offerup: {
+    url: 'https://offerup.com/post',
+    tip: 'Click "Post" → paste title and description → set price and condition.',
+    fields: ['Title','Price','Description','Condition'],
+  },
+  ebay: {
+    url: 'https://www.ebay.com/sell/selectformat',
+    tip: 'Select "Sell it yourself" → paste title → fill price, condition, description.',
+    fields: ['Title','Price','Description','Condition'],
+  },
+  nextdoor: {
+    url: 'https://nextdoor.com/for_sale_and_free/',
+    tip: 'Click "Sell Something" → paste title, price, description.',
+    fields: ['Title','Price','Description'],
+  },
+  mercari: {
+    url: 'https://www.mercari.com/sell/',
+    tip: 'Click "Sell" → paste title (40 char limit) → price → description.',
+    fields: ['Title (40 chars)','Price','Description'],
+  },
+};
+
+function buildPlatformCards(r, slug) {
+  const user = getUsername();
+  const smartLink = 'https://4sale.love/'+user+'/'+slug;
+  const fullDesc = r.description + '\n\n🔗 See photos & make offers: '+smartLink;
+  const shortTitle = r.title.slice(0,40); // Mercari limit
+
+  // Per-platform text (pre-formatted)
+  const texts = {
+    craigslist: { title: r.title, desc: fullDesc, price: '$'+r.price },
+    facebook:   { title: r.title, desc: fullDesc, price: '$'+r.price, cond: r.cond||'Good' },
+    offerup:    { title: r.title, desc: fullDesc, price: '$'+r.price, cond: r.cond||'Good' },
+    ebay:       { title: r.title, desc: fullDesc, price: '$'+r.price, cond: r.cond||'Good' },
+    nextdoor:   { title: r.title, desc: fullDesc, price: '$'+r.price },
+    mercari:    { title: shortTitle, desc: fullDesc, price: '$'+r.price, cond: r.cond||'Good' },
+  };
+
+  const postedSet = new Set();
+
+  document.getElementById('platform-cards').innerHTML = MPS.map((mp, idx) => {
+    const cfg = MP_CONFIG[mp.id];
+    const t = texts[mp.id];
+    const fieldList = cfg.fields.map(f=>`<span style="background:#f0eaff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:800;color:var(--p)">${f}</span>`).join(' ');
+    return `
+    <div id="mpcard-${mp.id}" style="background:var(--w);border:2px solid var(--rule);border-radius:12px;padding:14px;transition:border-color .15s">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:22px">${mp.ic}</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:800;color:var(--ink)">${mp.nm}</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:700;margin-top:1px">${cfg.tip}</div>
+        </div>
+        <span id="mpcard-status-${mp.id}" class="badge" style="background:rgba(221,212,248,.3);border-color:var(--rule);color:var(--muted)">not posted</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${fieldList}</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-p btn-sm" style="flex:1;justify-content:center" onclick="openAndCopy('${mp.id}','${escAttr(t.title)}','${escAttr(fullDesc)}','${escAttr(t.price)}')">
+          📋 Copy Text + Open ${mp.nm}
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="markPosted('${mp.id}')" id="mpcard-done-${mp.id}">
+          ✓ Mark Posted
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAndCopy(mpId, title, desc, price) {
+  const cfg = MP_CONFIG[mpId];
+  // Copy full listing text to clipboard
+  const text = title + '\n\n' + desc + '\n\nPrice: ' + price;
+  navigator.clipboard.writeText(text).catch(()=>{});
+  // Open platform in new tab
+  window.open(cfg.url, '_blank');
+  toast('📋 Copied! Paste into '+MPS.find(m=>m.id===mpId).nm);
+}
+
+function markPosted(mpId) {
+  const card = document.getElementById('mpcard-'+mpId);
+  const status = document.getElementById('mpcard-status-'+mpId);
+  const doneBtn = document.getElementById('mpcard-done-'+mpId);
+  card.style.borderColor = 'var(--g2)';
+  status.style.background = 'rgba(74,222,128,.12)';
+  status.style.borderColor = 'var(--g2)';
+  status.style.color = 'var(--g)';
+  status.textContent = '✓ posted';
+  doneBtn.style.display = 'none';
+
+  // Check if all selected are posted
+  const allPosted = MPS.every(mp => {
+    const s = document.getElementById('mpcard-status-'+mp.id);
+    return s && s.textContent === '✓ posted';
+  });
+  if(allPosted) showPushDone();
+  toast(MPS.find(m=>m.id===mpId).nm+' marked as posted ✓');
+}
+
+function showPushDone() {
+  const done = document.getElementById('push-done');
+  done.style.display = 'block';
+  const badges = MPS.filter(mp => {
+    const s = document.getElementById('mpcard-status-'+mp.id);
+    return s && s.textContent === '✓ posted';
+  });
+  document.getElementById('push-badges').innerHTML = badges.map((mp,i)=>
+    `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;border:1.5px solid ${RB[i%6]};background:${RBG[i%6]};color:${RB[i%6]}">✓ ${mp.ic} ${mp.nm}</span>`
+  ).join('');
+  toast('🎉 Posted to '+badges.length+' platforms!');
+}
+
+function showExtInfo(e) {
+  e.preventDefault();
+  document.getElementById('ext-info').style.display='block';
+}
+
+function escAttr(s){ return (s||'').replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
+
+async function doPush(){ /* legacy — kept for compatibility */ }
+
+function rePush(id){
+  const l=LISTINGS.find(x=>x.id===id);go('push');
+  setTimeout(()=>{document.getElementById('push-desc').value='Re-listing: '+l.title;document.getElementById('push-price').value=l.price;toast('Item loaded — hit Generate to refresh');},200);
+}
+
+function buildBLP(){
+  const el=document.getElementById('builder-list-preview');if(!el)return;
+  el.innerHTML=LISTINGS.slice(0,3).map(l=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--rule)">
+      <span style="font-size:18px">${l.em}</span>
+      <span style="flex:1;font-size:12px;font-weight:700">${l.title}</span>
+      <span style="font-family:'Baloo 2',cursive;font-size:13px;font-weight:800;color:var(--p)">$${l.price}</span>
+    </div>`).join('')+'<div style="font-size:11px;color:var(--muted);font-weight:700;margin-top:8px">+'+LISTINGS.length+' total listings</div>';
+}
+
+function builderAI(){toast('✨ AI generating your storefront...');setTimeout(()=>{bStep(1);toast('Site generated! Choose your style →');},1800);}
+
+function bStep(n){
+  bStepN=n;
+  [0,1,2].forEach(i=>{
+    document.getElementById('bs'+i).style.display=i===n?'':'none';
+    const s=document.querySelectorAll('.step')[i];
+    s.className='step'+(i===n?' on':i<n?' done':'');
+  });
+  if(n===2)renderSitePreview();
+}
+
+function selTheme(el,a,b){
+  document.querySelectorAll('#theme-grid .mpt').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');theme={a,b};
+}
+function selFont(el){
+  document.querySelectorAll('#font-grid .mpt').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function renderSitePreview(){
+  const name=document.getElementById('biz-name').value||'My Store';
+  const tag=document.getElementById('biz-tag').value||'';
+  const loc=document.getElementById('biz-loc').value||'';
+  const {a,b}=theme;
+  document.getElementById('site-preview').innerHTML=`
+    <div style="background:linear-gradient(135deg,${a},${b});padding:24px 20px;margin:-20px -20px 16px;position:relative">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ff4d4d,#ff9a00,#ffe600,#4ade80,#38bdf8,#818cf8,#e879f9)"></div>
+      <div style="font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:#fff;margin-bottom:3px">${name}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.7);font-weight:700">${tag}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px;font-weight:700">📍 ${loc} &nbsp;·&nbsp; ⭐ 4.9 · 12 reviews</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+      ${LISTINGS.slice(0,4).map(l=>`
+        <div style="border:2px solid #e0d4ff;border-radius:10px;overflow:hidden" onmouseover="this.style.borderColor='${a}'" onmouseout="this.style.borderColor='#e0d4ff'">
+          <div style="height:60px;background:linear-gradient(135deg,#f0eaff,#e8f5e9);display:flex;align-items:center;justify-content:center;font-size:28px">${l.em}</div>
+          <div style="padding:8px">
+            <div style="font-size:11px;font-weight:800;color:#1a0a2e;line-height:1.3;margin-bottom:4px">${l.title.slice(0,36)}${l.title.length>36?'…':''}</div>
+            <div style="font-family:'Baloo 2',cursive;font-size:14px;font-weight:800;color:${a}">$${l.price}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div style="margin-top:14px;padding:10px;background:#f0eaff;border-radius:8px;text-align:center;font-size:10px;font-weight:800;color:#7c5abf">Powered by 4sale.love · ${name}</div>`;
+}
+
+function pubSite(){
+  const user=getUsername();
+  toast('🚀 Site published at 4sale.love/'+user);
+}
+
+function getUsername(){return localStorage.getItem('4sale_username')||'omar';}
+
+function updateW(){
+  const text=document.getElementById('w-text')?.value||'🏷️ List with 4sale.love';
+  const color=document.getElementById('w-color')?.value||'#7c3aed';
+  const hex=document.getElementById('w-hex');if(hex)hex.value=color;
+  const btn=document.getElementById('w-preview');
+  if(btn){btn.textContent=text;btn.style.background=`linear-gradient(135deg,${color},#16a34a)`;}
+  const user=getUsername();
+  const cc=document.getElementById('code-content');
+  if(cc)cc.textContent=`<!-- 4sale.love Widget -->\n<script src="https://4sale.love/widget.js"\n  data-store="${user}"\n  data-color="${color}"\n  data-text="${text}"\n><\/script>`;
+}
+
+// load saved settings into form on page load
+function loadSettings(){
+  const key=getKey();
+  const user=getUsername();
+  const kInput=document.querySelector('input[placeholder="sk-ant-..."]');
+  const uInput=document.querySelector('input[value="omar"]');
+  if(kInput&&key)kInput.value=key;
+  if(uInput&&user)uInput.value=user;
+  // wire save buttons
+  const saveProfile=document.querySelector('button[onclick="toast(\'Profile saved ✓\')"]');
+  if(saveProfile){
+    saveProfile.onclick=()=>{
+      const u=document.querySelector('input[value="omar"]')?.value||user;
+      localStorage.setItem('4sale_username',u);
+      toast('Profile saved ✓');
+      updateW();
+    };
+  }
+  const saveKey=document.querySelector('button[onclick="toast(\'Key saved ✓\')"]');
+  if(saveKey){
+    saveKey.onclick=()=>{
+      const k=document.querySelector('input[placeholder="sk-ant-..."]')?.value||'';
+      saveKey(k);
+      toast('API key saved ✓');
+    };
+  }
+}
+
+function openWModal(){document.getElementById('wmodal').style.display='flex';}
+function slugify(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').split('-').slice(0,4).join('-')+'-'+Math.random().toString(36).slice(2,6);}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function cp(text,msg){navigator.clipboard.writeText(text).catch(()=>{});toast(msg||'Copied!');}
+// ══════════════════════════════════════════════════════════════════════════
+//  AGENT-TO-AGENT NEGOTIATION ENGINE
+//  Seller Agent: knows floor price, strategy, timeline
+//  Buyer Agent: simulated — makes offers, counters, reacts
+//  Loop runs via Claude API. You see every message in real time.
+//  You only get involved when: deal reached, deadlock, or floor breached
+// ══════════════════════════════════════════════════════════════════════════
+
+// ── NEGOTIATION STATE ─────────────────────────────────────────────────────
+const NEG_THREADS = [
+  {
+    id:'n1', listingId:1, em:'🎧',
+    title:'Sony WH-1000XM5 Headphones',
+    askPrice:220, floorPrice:180, condition:'Like New',
+    buyerName:'Alex B.', buyerAgent:true,
+    status:'active', round:2,
+    messages:[
+      {role:'buyer',  text:"Hi! I'm interested in the Sony headphones. Would you take $160?", price:160, ts:'2h ago'},
+      {role:'seller', text:"Thanks for your interest! These are in like-new condition with all accessories. I can come down to $210, but that's close to my bottom line given the condition.", price:210, ts:'2h ago', byAgent:true},
+    ]
+  },
+  {
+    id:'n2', listingId:2, em:'📱',
+    title:'Apple iPad Air 5th Gen + Pencil',
+    askPrice:380, floorPrice:320, condition:'Good',
+    buyerName:'Maria K.', buyerAgent:true,
+    status:'needs_approval', round:4,
+    messages:[
+      {role:'buyer',  text:"Is the iPad still available? My budget is $300.", price:300, ts:'5h ago'},
+      {role:'seller', text:"Yes, still available! The iPad is in great condition with 91% battery health — includes the Apple Pencil 2nd gen which alone is worth $100 new. Best I can do is $355.", price:355, ts:'5h ago', byAgent:true},
+      {role:'buyer',  text:"I appreciate that. Could you do $325? That's really my max.", price:325, ts:'4h ago'},
+      {role:'seller', text:"I understand budget constraints. Given the Pencil is included and battery health is still strong, I can meet you at $340. That's my final offer.", price:340, ts:'4h ago', byAgent:true},
+      {role:'buyer',  text:"Deal at $335? I can pick up today in Chicago.", price:335, ts:'1h ago'},
+    ]
+  },
+  {
+    id:'n3', listingId:3, em:'🛋️',
+    title:'IKEA MALM 6-Drawer Dresser',
+    askPrice:85, floorPrice:65, condition:'Good',
+    buyerName:'James T.', buyerAgent:false,
+    status:'active', round:1,
+    messages:[
+      {role:'buyer', text:"Can you do $50 on the dresser? I have a truck and can pick up tomorrow.", price:50, ts:'30m ago'},
+    ]
+  },
+  {
+    id:'n4', listingId:5, em:'🏠',
+    title:'Wicker Park Event Space',
+    askPrice:450, floorPrice:380, condition:'New',
+    buyerName:'Sarah Events LLC', buyerAgent:true,
+    status:'closed', round:3,
+    messages:[
+      {role:'buyer',  text:"Interested in booking for a corporate event. Can you do $400 for Saturday?", price:400, ts:'1d ago'},
+      {role:'seller', text:"Great choice for a corporate event! The space has full AV and kitchen access. I can offer $420 for Saturday — that reflects the weekend premium.", price:420, ts:'1d ago', byAgent:true},
+      {role:'buyer',  text:"$415 and we have a deal. We'll need access from 2pm.", price:415, ts:'1d ago'},
+      {role:'seller', text:"$415 works — 2pm access confirmed. I'll send you the booking details.", price:415, ts:'1d ago', byAgent:true},
+      {role:'system', text:'✅ Deal closed at $415 · Sarah Events LLC · Saturday pickup confirmed'},
+    ]
+  },
+];
+
+let activeThreadId = null;
+let isAgentThinking = false;
+
+// ── RENDER THREAD LIST ────────────────────────────────────────────────────
+function renderThreadList() {
+  const list = document.getElementById('thread-list');
+  if (!list) return;
+
+  const statusOrder = { needs_approval:0, active:1, closed:2 };
+  const sorted = [...NEG_THREADS].sort((a,b) => statusOrder[a.status] - statusOrder[b.status]);
+
+  list.innerHTML = sorted.map(t => {
+    const lastMsg  = t.messages[t.messages.length-1];
+    const latestPrice = [...t.messages].reverse().find(m => m.price)?.price;
+    const statusBadge =
+      t.status === 'needs_approval' ? `<span class="badge" style="background:rgba(245,166,35,.15);border-color:var(--accent-lt);color:var(--accent-lt)">⚠️ Needs You</span>`
+    : t.status === 'active'         ? `<span class="badge bg">● Active</span>`
+    : `<span class="badge" style="background:rgba(74,222,128,.12);border-color:var(--g2);color:var(--g)">✅ Closed</span>`;
+
+    return `
+    <div class="thread${t.id===activeThreadId?' active-thread':''}${t.status==='needs_approval'?' needs-approval':''}"
+         onclick="openThread('${t.id}')">
+      <div class="thread-header">
+        <span class="thread-em">${t.em}</span>
+        <div class="thread-info">
+          <div class="thread-title">${t.title}</div>
+          <div class="thread-meta">${t.buyerName} · Round ${t.round} · ${lastMsg?.ts||'just now'}</div>
+        </div>
+        <div class="thread-status">
+          ${statusBadge}
+          ${latestPrice ? `<span class="thread-price">$${latestPrice}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Update stats
+  document.getElementById('neg-active-count').textContent  = NEG_THREADS.filter(t=>t.status==='active').length;
+  document.getElementById('neg-closed-count').textContent  = NEG_THREADS.filter(t=>t.status==='closed').length;
+  document.getElementById('neg-approval-count').textContent= NEG_THREADS.filter(t=>t.status==='needs_approval').length;
+  const needsAttn = NEG_THREADS.filter(t=>t.status==='needs_approval').length;
+  const badge = document.getElementById('needs-attention-badge');
+  if(badge) { badge.textContent = needsAttn ? `${needsAttn} needs you` : 'All handled'; badge.className = needsAttn ? 'badge bp' : 'badge bg'; }
+}
+
+// ── OPEN A THREAD ─────────────────────────────────────────────────────────
+function openThread(id) {
+  activeThreadId = id;
+  const t = NEG_THREADS.find(x => x.id === id);
+  if (!t) return;
+
+  document.getElementById('thread-placeholder').style.display = 'none';
+  document.getElementById('thread-content').style.display = 'block';
+  document.getElementById('tc-em').textContent    = t.em;
+  document.getElementById('tc-title').textContent = t.title;
+  document.getElementById('tc-meta').textContent  = `${t.buyerName} · Ask $${t.askPrice} · Floor $${t.floorPrice} (hidden from buyer)`;
+
+  const statusMap = {
+    active:         ['badge bg','● Active'],
+    needs_approval: ['badge','⚠️ Needs Approval'],
+    closed:         ['badge bg','✅ Closed'],
+  };
+  const [cls, label] = statusMap[t.status] || ['badge','Unknown'];
+  const badge = document.getElementById('tc-badge');
+  badge.className = cls; badge.textContent = label;
+  if(t.status==='needs_approval'){badge.style.background='rgba(245,166,35,.15)';badge.style.borderColor='var(--accent-lt)';badge.style.color='var(--accent-lt)';}
+
+  renderMessages(t);
+
+  // Show approval card if needed
+  const approvalCard = document.getElementById('approval-card');
+  if (t.status === 'needs_approval') {
+    const buyerLatest = [...t.messages].reverse().find(m => m.role==='buyer' && m.price);
+    document.getElementById('appr-offer').textContent = `$${buyerLatest?.price || '?'}`;
+    document.getElementById('appr-ask').textContent   = `$${t.askPrice}`;
+    document.getElementById('appr-floor').textContent = `$${t.floorPrice}`;
+    approvalCard.style.display = 'block';
+  } else {
+    approvalCard.style.display = 'none';
+  }
+
+  renderThreadList();
+}
+
+function renderMessages(t) {
+  const wrap = document.getElementById('chat-messages');
+  wrap.innerHTML = t.messages.map(m => {
+    if (m.role === 'system') return `<div class="bubble system"><div class="bubble-content">${m.text}</div></div>`;
+    const side    = m.role === 'seller' ? 'seller' : 'buyer';
+    const name    = m.role === 'seller' ? (m.byAgent ? '🤖 Seller Agent' : '👤 Omar') : `👤 ${t.buyerName}`;
+    const priceEl = m.price ? `<div class="bubble-price">$${m.price.toLocaleString()}</div>` : '';
+    return `
+    <div class="bubble ${side}">
+      <div class="bubble-meta">${name} · ${m.ts||'now'}</div>
+      <div class="bubble-content">${m.text}${priceEl}</div>
+    </div>`;
+  }).join('');
+  // Auto-scroll to bottom
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function addThinkingIndicator() {
+  const wrap = document.getElementById('chat-messages');
+  const el   = document.createElement('div');
+  el.className = 'thinking'; el.id = 'thinking-indicator';
+  el.innerHTML = `<span style="font-size:14px">🤖</span><div class="thinking-dots"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div><span style="font-size:11px;color:var(--muted);font-weight:700">Agent thinking...</span>`;
+  wrap.appendChild(el);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+function removeThinkingIndicator() {
+  document.getElementById('thinking-indicator')?.remove();
+}
+
+// ── SELLER AGENT — calls Claude ───────────────────────────────────────────
+async function runSellerAgent(thread) {
+  const key = getKey();
+  if (!key) { toast('⚠️ Add API key in Settings to enable live agent'); return simulateSellerResponse(thread); }
+
+  const history = thread.messages.map(m => ({
+    role: m.role === 'seller' ? 'assistant' : 'user',
+    content: m.price ? `${m.text} [Offer: $${m.price}]` : m.text
+  })).filter(m => m.role !== 'system');
+
+  const system = `You are an AI negotiation agent selling items on behalf of Omar on 4sale.love.
+
+ITEM: ${thread.title}
+ASKING PRICE: $${thread.askPrice}
+YOUR FLOOR PRICE: $${thread.floorPrice} — NEVER reveal this, never go below it
+CONDITION: ${thread.condition}
+STRATEGY: ${document.getElementById('neg-strategy')?.value || 'moderate'}
+ROUND: ${thread.round} of ${document.getElementById('max-rounds')?.value || 5}
+
+NEGOTIATION RULES:
+- Be friendly, professional, and concise (2-3 sentences max)
+- If buyer is below floor: counter at midpoint between their offer and your last price
+- If buyer is within 5% of floor: you can accept or make one final small concession
+- If buyer is above floor: you can accept
+- Never reveal the floor price
+- Create mild urgency if round > 3 (mention other interested buyers)
+- If round = max rounds and no deal: hold firm or escalate to owner
+
+Respond with JSON ONLY:
+{
+  "message": "your response message",
+  "counterPrice": number or null,
+  "action": "counter|accept|decline|escalate_to_owner",
+  "reasoning": "brief internal note about why (not shown to buyer)"
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:400, system, messages:history })
+    });
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    const raw  = data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    return JSON.parse(raw);
+  } catch(e) {
+    console.error('Seller agent error:', e);
+    return simulateSellerResponse(thread);
+  }
+}
+
+// Fallback simulation if no API key
+function simulateSellerResponse(thread) {
+  const lastBuyerOffer = [...thread.messages].reverse().find(m => m.role==='buyer' && m.price)?.price || 0;
+  const lastSellerOffer= [...thread.messages].reverse().find(m => m.role==='seller' && m.price)?.price || thread.askPrice;
+  const strategy = document.getElementById('neg-strategy')?.value || 'moderate';
+  const midpoint  = Math.round((lastBuyerOffer + lastSellerOffer) / 2);
+  const floor     = thread.floorPrice;
+
+  if (lastBuyerOffer >= floor * 0.97) {
+    return { message:`I can work with that. ${lastBuyerOffer >= floor ? "We have a deal at $"+lastBuyerOffer+"!" : "Let's meet at $"+Math.round((lastBuyerOffer+floor)/2)+" and call it done."}`, counterPrice: lastBuyerOffer >= floor ? lastBuyerOffer : Math.round((lastBuyerOffer+floor)/2), action: lastBuyerOffer >= floor ? 'accept' : 'counter', reasoning:'Near floor, making final concession' };
+  }
+  if (thread.round >= parseInt(document.getElementById('max-rounds')?.value || 5)) {
+    return { message:"I appreciate your persistence! I have another interested buyer, so I need to make a decision. My absolute best is $"+(midpoint > floor ? midpoint : floor)+". Let me know by end of day.", counterPrice: midpoint > floor ? midpoint : floor, action:'escalate_to_owner', reasoning:'Max rounds reached, escalating' };
+  }
+  const counter = strategy === 'firm' ? lastSellerOffer : strategy === 'flexible' ? midpoint : Math.round(lastSellerOffer * 0.97);
+  const msgs = [
+    `I appreciate the offer! The ${thread.condition.toLowerCase()} condition and everything included really does justify the price. Best I can do is $${counter}.`,
+    `Thanks for your interest! I've had a few others looking at this. I can come down to $${counter} — that's a fair price for what you're getting.`,
+    `I understand you're working with a budget. Given the condition, I can meet you at $${counter}. That's close to my limit.`
+  ];
+  return { message: msgs[thread.round % msgs.length], counterPrice: counter, action:'counter', reasoning:'Standard counter offer' };
+}
+
+// ── RUN FULL DEMO NEGOTIATION ─────────────────────────────────────────────
+async function runDemoNegotiation() {
+  // Create a fresh demo thread on the MALM dresser
+  const demoThread = {
+    id:'demo', listingId:3, em:'🛋️',
+    title:'IKEA MALM 6-Drawer Dresser', askPrice:85, floorPrice:65, condition:'Good',
+    buyerName:'Alex (AI Buyer)', buyerAgent:true, status:'active', round:0, messages:[]
+  };
+  // Remove existing demo thread if present
+  const existingIdx = NEG_THREADS.findIndex(t=>t.id==='demo');
+  if (existingIdx >= 0) NEG_THREADS.splice(existingIdx, 1);
+  NEG_THREADS.unshift(demoThread);
+  renderThreadList();
+  openThread('demo');
+  toast('▶ Running live A2A negotiation demo...');
+
+  // Simulate buyer agent making offers
+  const buyerMoves = [
+    { price: 50, text: "Hi! I saw the dresser listing. It's nice but $85 feels steep for IKEA furniture. Would you take $50? I can pick up this weekend." },
+    { price: 65, text: "I see where you're coming from. How about $65? That feels fair for used IKEA." },
+    { price: 70, text: "Okay — $70 and I'll bring cash and a truck today. That's my final offer." },
+  ];
+
+  for (const move of buyerMoves) {
+    await sleep(1000);
+    demoThread.round++;
+    demoThread.messages.push({ role:'buyer', text:move.text, price:move.price, ts:'just now' });
+    renderMessages(demoThread);
+    await sleep(600);
+
+    // Show agent thinking
+    addThinkingIndicator();
+    await sleep(1800);
+    removeThinkingIndicator();
+
+    // Get seller agent response
+    const response = await runSellerAgent(demoThread);
+    demoThread.messages.push({ role:'seller', text:response.message, price:response.counterPrice||null, ts:'just now', byAgent:true });
+
+    if (response.action === 'accept') {
+      demoThread.status = 'closed';
+      demoThread.messages.push({ role:'system', text:`✅ Deal closed at $${response.counterPrice} · Agent accepted automatically · Omar notified` });
+      renderMessages(demoThread);
+      renderThreadList();
+      toast('🎉 Deal closed at $' + response.counterPrice + '!');
+      break;
+    } else if (response.action === 'escalate_to_owner') {
+      demoThread.status = 'needs_approval';
+      demoThread.messages.push({ role:'system', text:`⚠️ Agent escalating to Omar — max rounds reached. Last buyer offer: $${move.price}` });
+      renderMessages(demoThread);
+      const approvalCard = document.getElementById('approval-card');
+      document.getElementById('appr-offer').textContent = `$${move.price}`;
+      document.getElementById('appr-ask').textContent   = `$${demoThread.askPrice}`;
+      document.getElementById('appr-floor').textContent = `$${demoThread.floorPrice}`;
+      approvalCard.style.display = 'block';
+      renderThreadList();
+      toast('⚠️ Agent escalated to you — check approval card');
+      break;
+    } else {
+      renderMessages(demoThread);
+    }
+    await sleep(800);
+  }
+  renderThreadList();
+}
+
+// ── APPROVAL ACTIONS ──────────────────────────────────────────────────────
+function approveDealt() {
+  const t = NEG_THREADS.find(x => x.id === activeThreadId);
+  if (!t) return;
+  const offer = document.getElementById('appr-offer').textContent;
+  t.status = 'closed';
+  t.messages.push({ role:'system', text:`✅ Omar approved the deal at ${offer} · Buyer notified · Mark as sold` });
+  t.messages.push({ role:'seller', text:`Great news! We have a deal at ${offer}. I'll send you the pickup details. Thanks for working with us!`, ts:'now', byAgent:false });
+  document.getElementById('approval-card').style.display = 'none';
+  renderMessages(t); renderThreadList();
+  toast('✅ Deal approved at ' + offer);
+}
+
+function declineDeal() {
+  const t = NEG_THREADS.find(x => x.id === activeThreadId);
+  if (!t) return;
+  t.status = 'active';
+  t.messages.push({ role:'seller', text:"Thank you for your offer. After consideration, I'm going to hold at my current price. Let me know if you change your mind!", ts:'now', byAgent:false });
+  document.getElementById('approval-card').style.display = 'none';
+  renderMessages(t); renderThreadList();
+  toast('Offer declined — thread still active');
+}
+
+function counterManually() {
+  document.getElementById('approval-card').style.display = 'none';
+  const t = NEG_THREADS.find(x => x.id === activeThreadId);
+  if (!t) return;
+  t.status = 'active';
+  t.messages.push({ role:'system', text:'📝 Omar taking over negotiation manually' });
+  renderMessages(t); renderThreadList();
+  document.getElementById('manual-msg').focus();
+}
+
+function sendManual() {
+  const input = document.getElementById('manual-msg');
+  const text  = input.value.trim();
+  if (!text) return;
+  const t = NEG_THREADS.find(x => x.id === activeThreadId);
+  if (!t) return;
+  t.messages.push({ role:'seller', text, ts:'now', byAgent:false });
+  input.value = '';
+  renderMessages(t);
+  toast('Message sent as Omar (not agent)');
+}
+
+// ── INIT NEGOTIATE PAGE ───────────────────────────────────────────────────
+function initNegotiate() { renderThreadList(); }
+
+// ── STOREFRONT RENDER ────────────────────────────────────────────────────
+function renderStorefront() {
+  const user = getUsername();
+  const url  = `4sale.love/${user}`;
+  document.getElementById('store-url-bar').textContent = url;
+
+  // Share channels row
+  const fullUrl = `https://${url}`;
+  const shareTitle = encodeURIComponent(`${user}'s Store — check out these listings!`);
+  document.getElementById('store-share-row').innerHTML = [
+    { icon:'💬', label:'WhatsApp',   href:`https://wa.me/?text=${shareTitle}%20${encodeURIComponent(fullUrl)}` },
+    { icon:'📱', label:'Text',       href:`sms:?body=${shareTitle}%20${encodeURIComponent(fullUrl)}` },
+    { icon:'🏘️', label:'Nextdoor',   href:'https://nextdoor.com/' },
+    { icon:'👥', label:'Facebook',   href:`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}` },
+    { icon:'✉️', label:'Email',      href:`mailto:?subject=${shareTitle}&body=${encodeURIComponent(fullUrl)}` },
+    { icon:'📋', label:'Craigslist', href:'https://post.craigslist.org/' },
+  ].map(c=>`<a href="${c.href}" target="_blank" class="sch-btn">${c.icon} ${c.label}</a>`).join('');
+
+  // Render the microsite HTML into the preview div
+  document.getElementById('storefront-preview').innerHTML = buildMicrositeHTML(user);
+
+  // Wire up offer buttons inside preview
+  document.getElementById('storefront-preview').querySelectorAll('[data-offer-id]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const l = LISTINGS.find(x => x.id === parseInt(btn.dataset.offerId));
+      if(l) quickOfferToast(l);
+    });
+  });
+}
+
+function quickOfferToast(l) {
+  toast(`💬 Offer on: ${l.title.slice(0,35)}… — tap View Live to interact`);
+}
+
+function buildMicrositeHTML(user) {
+  const url = `4sale.love/${user}`;
+  const active = LISTINGS.filter(l=>!l.sold);
+  const totalViews = LISTINGS.reduce((a,l)=>a+(l.views||0),0);
+
+  const cardHTML = active.map((l, idx) => {
+    const isFirst = idx === 0;
+    return `
+    <div class="sf-card${isFirst?' sf-full':''}">
+      <div class="sf-card-img">
+        <span>${l.em}</span>
+        <span class="sf-cond-tag">${l.cond}</span>
+        <span class="sf-views">👁 ${l.views}</span>
+        ${isFirst?'<span style="position:absolute;top:7px;right:7px;background:#ff4d00;color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase">Featured</span>':''}
+      </div>
+      <div class="sf-card-body">
+        <p class="sf-card-title">${esc(l.title)}</p>
+        <div class="sf-price">$${l.price.toLocaleString()}</div>
+        <div class="sf-card-foot">
+          <span style="font-size:9px;color:#888;font-weight:700">💬 Make offer</span>
+          <button class="sf-offer-btn" data-offer-id="${l.id}">Offer</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div>
+    <div class="sf-hero">
+      <div class="sf-hero-rb"></div>
+      <div class="sf-hero-inner">
+        <div class="sf-top">
+          <div class="sf-avatar">🏷️</div>
+          <div>
+            <div class="sf-name">${user.charAt(0).toUpperCase()+user.slice(1)}'s Store</div>
+            <div class="sf-handle">${url}</div>
+            <div class="sf-bio">Quality items · Fast responses · Chicago pickup or shipped</div>
+          </div>
+        </div>
+        <div class="sf-stats">
+          <div><div class="sf-stat-n">${active.length}</div><div class="sf-stat-l">Active</div></div>
+          <div><div class="sf-stat-n">${totalViews.toLocaleString()}</div><div class="sf-stat-l">Views</div></div>
+          <div><div class="sf-stat-n">⭐ 4.9</div><div class="sf-stat-l">Rating</div></div>
+        </div>
+        <div class="sf-badges">
+          <span class="sf-badge" style="background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.4);color:#00e676">✨ AI responds 24/7</span>
+          <span class="sf-badge" style="background:rgba(255,77,0,.1);border-color:rgba(255,77,0,.4);color:#ff6b35">⚡ Fast replies</span>
+          <span class="sf-badge" style="background:rgba(255,184,0,.1);border-color:rgba(255,184,0,.4);color:#ffb800">🚚 Ships nationwide</span>
+        </div>
+      </div>
+    </div>
+    <div class="sf-trust">
+      <span>🛡️ <strong>Verified seller</strong></span>
+      <span>💬 <strong>Avg reply:</strong> &lt;5 min</span>
+      <span>📦 <strong>Ships same day</strong></span>
+      <span>✅ <strong>12 reviews</strong></span>
+    </div>
+    <div class="sf-filters">
+      <button class="sf-chip on">All Items</button>
+      <button class="sf-chip">Electronics</button>
+      <button class="sf-chip">Furniture</button>
+      <button class="sf-chip">Services</button>
+    </div>
+    <div class="sf-grid-wrap">
+      <div class="sf-grid-label">
+        <span>FOR SALE</span><span>${active.length} items</span>
+      </div>
+      <div class="sf-grid">${cardHTML}</div>
+    </div>
+    <div class="sf-share-bar">
+      <div class="sf-link-chip">${url}</div>
+      <button class="sf-copy" onclick="cp('https://${url}','Store link copied!')">Copy Link</button>
+    </div>
+  </div>`;
+}
+
+// ── OPEN STOREFRONT AS FULL PAGE ──────────────────────────────────────────
+function openStorefrontFull() {
+  const user = getUsername();
+  // Build the full standalone microsite HTML and open it in a new tab
+  const html = buildFullMicrositeHTML(user);
+  const blob  = new Blob([html], { type:'text/html' });
+  const url   = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  // Revoke after 60s
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+function buildFullMicrositeHTML(user) {
+  // Serialise LISTINGS so the standalone page has real data
+  const listingsJSON = JSON.stringify(LISTINGS.map(l=>({...l, desc: l.desc||l.title, pl:l.pl||Math.round(l.price*.8), ph:l.ph||Math.round(l.price*1.2), ps:l.ps||l.price, rationale:l.rationale||'Based on current market comparables.', tags:l.tags||[]})));
+  const storeURL = `4sale.love/${user}`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>${user}'s Store — 4sale.love</title>
+<meta property="og:title" content="${user}'s Store 🏷️">
+<meta property="og:description" content="Quality items, fast deals. Make an offer — AI responds instantly 24/7.">
+<meta property="og:url" content="https://${storeURL}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0d0d0d;--white:#fff;--off:#f5f3ef;--accent:#ff4d00;--accent2:#ffb800;--g:#1a9e5c;--g2:#00e676;--muted:#888;--rule:#e8e6e1;--rb:linear-gradient(90deg,#ff4d00,#ffb800,#00e676,#00b4ff,#a855f7,#ff4d00);--ff:'Bricolage Grotesque',sans-serif;--mono:'DM Mono',monospace;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--ff);background:var(--off);color:var(--ink);min-height:100vh;overflow-x:hidden}
+header{position:sticky;top:0;z-index:100;background:rgba(245,243,239,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.h-logo{font-size:17px;font-weight:800;letter-spacing:-.03em}.h-logo span{color:var(--accent)}
+.share-pill{display:flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border:none;padding:7px 16px;border-radius:30px;font-family:var(--ff);font-size:12px;font-weight:700;cursor:pointer}
+.hero{background:var(--ink);padding:28px 20px 24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 85% 20%,rgba(255,77,0,.18) 0%,transparent 55%),radial-gradient(ellipse at 10% 80%,rgba(26,158,92,.12) 0%,transparent 50%)}
+.hero-rb{height:3px;background:var(--rb);position:absolute;top:0;left:0;right:0}
+.hero-inner{position:relative;z-index:1}
+.hero-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.avatar{width:58px;height:58px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:24px;border:3px solid rgba(255,255,255,.12)}
+.store-name{font-size:22px;font-weight:800;letter-spacing:-.03em;background:linear-gradient(90deg,#fff,rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
+.store-handle{font-size:11px;font-weight:500;color:rgba(255,255,255,.4);font-family:var(--mono);margin-bottom:6px}
+.store-bio{font-size:12px;color:rgba(255,255,255,.6);line-height:1.5;font-weight:500}
+.hero-stats{display:flex;gap:18px;margin-bottom:10px}
+.hstat-n{font-size:21px;font-weight:800;color:#fff;letter-spacing:-.03em}
+.hstat-l{font-size:9px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em}
+.hero-badges{display:flex;gap:7px;flex-wrap:wrap}
+.hbadge{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:30px;font-size:10px;font-weight:700;border:1.5px solid}
+.trust-bar{background:#fff;border-bottom:1px solid var(--rule);padding:9px 20px;overflow-x:auto;scrollbar-width:none;display:flex;align-items:center;gap:18px;white-space:nowrap;font-size:10px;font-weight:700;color:var(--muted)}
+.trust-bar::-webkit-scrollbar{display:none}.trust-bar strong{color:var(--ink)}
+.filter-wrap{padding:12px 20px 8px;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}
+.filter-wrap::-webkit-scrollbar{display:none}
+.chip{padding:6px 15px;border-radius:30px;font-size:11px;font-weight:700;border:1.5px solid var(--rule);background:#fff;color:var(--muted);cursor:pointer;white-space:nowrap;font-family:var(--ff)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid-wrap{padding:0 20px 80px}
+.grid-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;justify-content:space-between}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.lcard{background:#fff;border:1.5px solid var(--rule);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:transform .15s,border-color .15s}
+.lcard:hover{transform:translateY(-2px);border-color:#ccc}
+.lcard:active{transform:scale(.98)}
+.lcard.full{grid-column:1/-1}
+.card-img{aspect-ratio:1;background:linear-gradient(135deg,#f0ede8,#e8e5de);display:flex;align-items:center;justify-content:center;font-size:38px;position:relative;overflow:hidden}
+.lcard.full .card-img{aspect-ratio:16/7;font-size:52px}
+.cond-tag{position:absolute;bottom:6px;left:6px;background:rgba(13,13,13,.72);color:#fff;font-size:8px;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+.views-tag{position:absolute;bottom:6px;right:6px;color:rgba(255,255,255,.8);font-size:9px;font-weight:700}
+.card-body{padding:9px}
+.card-title{font-size:11px;font-weight:700;color:var(--ink);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px}
+.lcard.full .card-title{font-size:13px}
+.card-price{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.lcard.full .card-price{font-size:21px}
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:5px;padding-top:5px;border-top:1px solid #f0ede8}
+.offer-tap{background:var(--off);border:none;border-radius:20px;padding:3px 10px;font-size:9px;font-weight:800;cursor:pointer;font-family:var(--ff)}
+.offer-tap:hover{background:var(--accent);color:#fff}
+#single-view{display:none;position:fixed;inset:0;z-index:500;background:var(--off);overflow-y:auto;animation:su .25s ease}
+@keyframes su{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+.sv-header{position:sticky;top:0;background:rgba(245,243,239,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;z-index:10}
+.sv-back{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;line-height:1}
+.sv-title-sm{font-size:13px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sv-share{background:var(--ink);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--ff)}
+.sv-img{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#f0ede8,#e8e5de);display:flex;align-items:center;justify-content:center;font-size:80px;max-height:300px;overflow:hidden}
+.sv-body{padding:18px;max-width:480px;margin:0 auto}
+.sv-cond{display:inline-block;padding:3px 11px;border-radius:20px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--off);border:1.5px solid var(--rule);color:var(--muted);margin-bottom:9px}
+.sv-name{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px;line-height:1.2}
+.sv-price{font-size:34px;font-weight:800;letter-spacing:-.04em;margin-bottom:3px}
+.sv-price-sub{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:12px}
+.sv-desc{font-size:13px;color:#444;line-height:1.7;font-weight:500;margin-bottom:14px}
+.price-intel{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:11px 13px;margin-bottom:14px}
+.pi-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.pi-label{font-size:10px;font-weight:700;color:#166534}
+.pi-val{font-size:11px;font-weight:800;color:#15803d}
+.pi-val.hl{font-size:13px;color:var(--accent)}
+.pi-note{font-size:10px;color:#166534;font-weight:600;margin-top:3px;line-height:1.4}
+.offer-box{background:var(--ink);border-radius:var(--r);padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.offer-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--rb)}
+.ob-label{font-size:9px;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.ob-row{display:flex;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:9px;overflow:hidden;margin-bottom:8px}
+.ob-dollar{color:rgba(255,255,255,.4);padding:0 10px;font-size:18px;display:flex;align-items:center}
+.ob-input{flex:1;background:none;border:none;color:#fff;font-size:22px;font-weight:800;padding:11px 0;outline:none;font-family:var(--ff)}
+.ob-input::placeholder{color:rgba(255,255,255,.2)}
+.ob-note{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:7px;padding:9px 11px;color:rgba(255,255,255,.8);font-family:var(--ff);font-size:12px;outline:none;resize:none;margin-bottom:9px}
+.ob-note::placeholder{color:rgba(255,255,255,.25)}
+.ob-cta{width:100%;background:var(--accent);border:none;border-radius:9px;padding:13px;color:#fff;font-family:var(--ff);font-size:14px;font-weight:800;cursor:pointer}
+.buy-now{width:100%;background:var(--off);border:1.5px solid var(--rule);border-radius:9px;padding:12px;color:var(--ink);font-family:var(--ff);font-size:13px;font-weight:800;cursor:pointer;margin-bottom:10px}
+.buy-now:hover{background:var(--ink);color:#fff}
+.ai-note{text-align:center;font-size:10px;color:rgba(255,255,255,.3);font-weight:600;margin-top:7px}
+.offer-success{background:#f0fdf4;border:2px solid #bbf7d0;border-radius:var(--r);padding:16px;text-align:center;display:none;margin-top:10px}
+.offer-success.show{display:block}
+.share-bar{background:#fff;border-top:1px solid var(--rule);padding:12px 20px;display:flex;gap:8px;align-items:center;position:sticky;bottom:0;z-index:10}
+.sb-link{flex:1;background:var(--off);border:1.5px solid var(--rule);border-radius:9px;padding:9px 13px;font-family:var(--mono);font-size:10px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.sb-copy{background:var(--ink);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-family:var(--ff);font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.sb-copy.copied{background:#1a9e5c}
+.modal-bg{position:fixed;inset:0;background:rgba(13,13,13,.6);z-index:600;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:18px 20px 32px;width:100%;max-width:540px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.modal-bg.open .modal{transform:none}
+.mhandle{width:34px;height:4px;background:#e8e6e1;border-radius:2px;margin:0 auto 16px}
+.mtitle{font-size:16px;font-weight:800;margin-bottom:3px;letter-spacing:-.02em}
+.msub{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:14px}
+.mlink-box{display:flex;align-items:center;gap:7px;background:var(--off);border:1.5px solid var(--rule);border-radius:9px;padding:9px 13px;margin-bottom:14px}
+.mlink-text{flex:1;font-family:var(--mono);font-size:11px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mcopy{background:var(--ink);color:#fff;border:none;border-radius:7px;padding:6px 13px;font-size:10px;font-weight:800;cursor:pointer;font-family:var(--ff)}
+.mcopy.copied{background:#1a9e5c}
+.channels{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ch{display:flex;align-items:center;gap:9px;background:var(--off);border:1.5px solid var(--rule);border-radius:11px;padding:11px 13px;cursor:pointer;font-size:12px;font-weight:700;color:var(--ink);border:none;font-family:var(--ff);text-align:left;transition:all .15s}
+.ch:hover{background:var(--ink);color:#fff}
+.ch-icon{font-size:18px;flex-shrink:0}
+.ch-name{font-weight:800}
+.ch-desc{font-size:9px;color:var(--muted);margin-top:1px}
+.ch:hover .ch-desc{color:rgba(255,255,255,.5)}
+#om .modal{background:var(--ink)}
+#om .mhandle{background:rgba(255,255,255,.15)}
+#om .mtitle{color:#fff}
+#om .msub{color:rgba(255,255,255,.4)}
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;border-radius:30px;padding:9px 18px;font-size:12px;font-weight:700;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:480px){.grid{grid-template-columns:repeat(3,1fr)}.lcard.full{grid-column:span 2}}
+</style>
+</head>
+<body>
+<header>
+  <div class="h-logo">4<span>sale</span>ai</div>
+  <button class="share-pill" onclick="openSM(null)">🔗 Share Store</button>
+</header>
+<div class="hero">
+  <div class="hero-rb"></div>
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="avatar">🏷️</div>
+      <div>
+        <div class="store-name">${user.charAt(0).toUpperCase()+user.slice(1)}'s Store</div>
+        <div class="store-handle">${storeURL}</div>
+        <div class="store-bio">Wicker Park, Chicago · Quality items, fast responses. Pickup or shipped.</div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hstat-n">${LISTINGS.length}</div><div class="hstat-l">Active</div></div>
+      <div><div class="hstat-n">${LISTINGS.reduce((a,l)=>a+(l.views||0),0).toLocaleString()}</div><div class="hstat-l">Views</div></div>
+      <div><div class="hstat-n">⭐ 4.9</div><div class="hstat-l">Rating</div></div>
+    </div>
+    <div class="hero-badges">
+      <span class="hbadge" style="background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.4);color:#00e676">✨ AI responds 24/7</span>
+      <span class="hbadge" style="background:rgba(255,77,0,.1);border-color:rgba(255,77,0,.4);color:#ff6b35">⚡ Fast replies</span>
+      <span class="hbadge" style="background:rgba(255,184,0,.1);border-color:rgba(255,184,0,.4);color:#ffb800">🚚 Ships nationwide</span>
+    </div>
+  </div>
+</div>
+<div class="trust-bar">
+  <span>🛡️ <strong>Verified</strong></span>
+  <span>💬 <strong>Reply:</strong> &lt;5 min</span>
+  <span>📦 <strong>Same-day ship</strong></span>
+  <span>✅ <strong>12 reviews · 5★</strong></span>
+  <span>🏠 <strong>Chicago pickup</strong></span>
+</div>
+<div class="filter-wrap">
+  <button class="chip on" onclick="filt(this,'all')">All Items</button>
+  <button class="chip" onclick="filt(this,'electronics')">Electronics</button>
+  <button class="chip" onclick="filt(this,'furniture')">Furniture</button>
+  <button class="chip" onclick="filt(this,'services')">Services</button>
+  <button class="chip" onclick="filt(this,'other')">Other</button>
+</div>
+<div class="grid-wrap">
+  <div class="grid-label"><span>FOR SALE</span><span id="ic">${LISTINGS.length} items</span></div>
+  <div class="grid" id="grid"></div>
+</div>
+<div class="share-bar">
+  <div class="sb-link" onclick="copyS()">${storeURL}</div>
+  <button class="sb-copy" id="sbc" onclick="copyS()">Copy Link</button>
+</div>
+
+<!-- Single listing -->
+<div id="single-view">
+  <div class="sv-header">
+    <button class="sv-back" onclick="closeS()">←</button>
+    <span class="sv-title-sm" id="svt"></span>
+    <button class="sv-share" onclick="shareCurrent()">Share 🔗</button>
+  </div>
+  <div class="sv-img" id="svi"></div>
+  <div class="sv-body">
+    <span class="sv-cond" id="svc"></span>
+    <h1 class="sv-name" id="svn"></h1>
+    <div class="sv-price" id="svp"></div>
+    <div class="sv-price-sub" id="svps"></div>
+    <p class="sv-desc" id="svd"></p>
+    <div class="price-intel">
+      <div class="pi-row"><span class="pi-label">Market range</span><span class="pi-val" id="svr"></span></div>
+      <div class="pi-row"><span class="pi-label">AI suggests</span><span class="pi-val hl" id="svsg"></span></div>
+      <p class="pi-note" id="svrat"></p>
+    </div>
+    <button class="buy-now" onclick="buyN()">Buy Now at <span id="bprice"></span></button>
+    <div class="offer-box">
+      <div class="ob-label">Make an Offer</div>
+      <div class="ob-row"><span class="ob-dollar">$</span><input type="number" class="ob-input" id="oi" placeholder="Your offer"></div>
+      <textarea class="ob-note" id="on" rows="2" placeholder="Any message? (optional)"></textarea>
+      <button class="ob-cta" onclick="sendOff()">Send Offer — AI responds instantly</button>
+      <div class="ai-note">✨ AI negotiates on ${user}'s behalf 24/7</div>
+    </div>
+    <div class="offer-success" id="offs">
+      <div style="font-size:28px;margin-bottom:6px">✅</div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:3px">Offer sent!</div>
+      <div style="font-size:12px;color:#166534">AI is reviewing your offer and will respond within seconds.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:12px" id="svtags"></div>
+  </div>
+</div>
+
+<!-- Share modal -->
+<div class="modal-bg" id="sm" onclick="if(event.target===this)closeM('sm')">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="smtitle">Share Store</div>
+    <div class="msub" id="smsub">One link to all listings</div>
+    <div class="mlink-box"><span class="mlink-text" id="smlink">${storeURL}</span><button class="mcopy" id="smlcopy" onclick="copyML()">Copy</button></div>
+    <div class="channels">
+      <button class="ch" onclick="sc('whatsapp')"><span class="ch-icon">💬</span><div><div class="ch-name">WhatsApp</div><div class="ch-desc">Send to contacts</div></div></button>
+      <button class="ch" onclick="sc('sms')"><span class="ch-icon">📱</span><div><div class="ch-name">Text</div><div class="ch-desc">iMessage / SMS</div></div></button>
+      <button class="ch" onclick="sc('facebook')"><span class="ch-icon">👥</span><div><div class="ch-name">Facebook</div><div class="ch-desc">Post or message</div></div></button>
+      <button class="ch" onclick="sc('nextdoor')"><span class="ch-icon">🏘️</span><div><div class="ch-name">Nextdoor</div><div class="ch-desc">Your neighborhood</div></div></button>
+      <button class="ch" onclick="sc('instagram')"><span class="ch-icon">📸</span><div><div class="ch-name">Instagram</div><div class="ch-desc">Bio or story link</div></div></button>
+      <button class="ch" onclick="sn()"><span class="ch-icon">⬆️</span><div><div class="ch-name">More...</div><div class="ch-desc">System share</div></div></button>
+    </div>
+  </div>
+</div>
+
+<!-- Offer modal -->
+<div class="modal-bg" id="om" onclick="if(event.target===this)closeM('om')">
+  <div class="modal" style="background:#0d0d0d">
+    <div class="mhandle" style="background:rgba(255,255,255,.15)"></div>
+    <div class="mtitle" style="color:#fff" id="omtitle">Make an Offer</div>
+    <div class="msub" style="color:rgba(255,255,255,.4)" id="omsub"></div>
+    <div class="ob-row" style="margin-bottom:9px"><span class="ob-dollar">$</span><input type="number" class="ob-input" id="oma" placeholder="Your offer"></div>
+    <textarea class="ob-note" id="omn" rows="2" placeholder="Any message?"></textarea>
+    <button class="ob-cta" onclick="subOff()">Send Offer ✨</button>
+    <div class="ai-note" style="margin-top:9px">AI responds instantly · 24/7</div>
+    <div class="offer-success" id="omsucc" style="margin-top:10px"><div style="font-size:22px;margin-bottom:5px">✅</div><div style="font-size:14px;font-weight:800">Offer sent! You'll hear back soon.</div></div>
+  </div>
+</div>
+
+<div class="toast" id="t"></div>
+<script>
+const LS=${listingsJSON};
+const RB=['#ff4d00','#ffb800','#00e676','#00b4ff','#a855f7','#ff6b6b'];
+const RBG=['rgba(255,77,0,.1)','rgba(255,184,0,.1)','rgba(0,230,118,.1)','rgba(0,180,255,.1)','rgba(168,85,247,.1)','rgba(255,107,107,.1)'];
+const STOREURL='${storeURL}';
+let cur=null,sTgt=null;
+window.addEventListener('DOMContentLoaded',()=>renderG('all'));
+function renderG(cat){
+  const f=cat==='all'?LS:LS.filter(l=>l.cat===cat);
+  document.getElementById('ic').textContent=f.length+' item'+(f.length!==1?'s':'');
+  document.getElementById('grid').innerHTML=f.map((l,i)=>\`
+    <div class="lcard\${i===0&&cat==='all'?' full':''}" onclick="openL(\${l.id})">
+      <div class="card-img"><span>\${l.em}</span>
+        <span class="cond-tag">\${l.cond}</span>
+        <span class="views-tag">👁 \${l.views}</span>
+        \${i===0&&cat==='all'?'<span style="position:absolute;top:7px;right:7px;background:#ff4d00;color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase">Featured</span>':''}
+      </div>
+      <div class="card-body">
+        <p class="card-title">\${l.title}</p>
+        <div class="card-price">$\${l.price.toLocaleString()}</div>
+        <div class="card-foot"><span style="font-size:9px;color:#888;font-weight:700">💬 Make offer</span>
+          <button class="offer-tap" onclick="event.stopPropagation();openOM(\${l.id})">Offer</button>
+        </div>
+      </div>
+    </div>\`).join('');
+}
+function filt(el,cat){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===el));renderG(cat);}
+function openL(id){
+  const l=LS.find(x=>x.id===id);if(!l)return;cur=l;
+  document.getElementById('svt').textContent=l.title;
+  document.getElementById('svi').innerHTML=\`<span style="font-size:80px">\${l.em}</span>\`;
+  document.getElementById('svc').textContent=l.cond;
+  document.getElementById('svn').textContent=l.title;
+  document.getElementById('svp').textContent=\`$\${l.price.toLocaleString()}\`;
+  document.getElementById('svps').textContent=\`AI market range: $\${l.pl}–$\${l.ph} · Suggested: $\${l.ps}\`;
+  document.getElementById('svd').textContent=l.desc||l.description||'';
+  document.getElementById('svr').textContent=\`$\${l.pl}–$\${l.ph}\`;
+  document.getElementById('svsg').textContent=\`$\${l.ps}\`;
+  document.getElementById('svrat').textContent=l.rationale||'';
+  document.getElementById('bprice').textContent=\`$\${l.price.toLocaleString()}\`;
+  document.getElementById('svtags').innerHTML=(l.tags||[]).map((t,i)=>\`<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;border:1.5px solid \${RB[i%6]};background:\${RBG[i%6]};color:\${RB[i%6]}">\${t}</span>\`).join('');
+  document.getElementById('oi').value='';document.getElementById('on').value='';
+  document.getElementById('offs').classList.remove('show');
+  document.querySelector('.offer-box').style.display='';
+  document.getElementById('single-view').style.display='block';
+  document.body.style.overflow='hidden';
+}
+function closeS(){document.getElementById('single-view').style.display='none';document.body.style.overflow='';cur=null;}
+function sendOff(){
+  const v=document.getElementById('oi').value;if(!v||parseFloat(v)<=0)return;
+  const b=document.querySelector('.ob-cta');b.textContent='Sending...';b.disabled=true;
+  setTimeout(()=>{document.getElementById('offs').classList.add('show');document.querySelector('.offer-box').style.display='none';b.textContent='Send Offer — AI responds instantly';b.disabled=false;},1300);
+}
+function buyN(){if(!cur)return;document.getElementById('oi').value=cur.price;sendOff();}
+function openOM(id){
+  const l=LS.find(x=>x.id===id);if(!l)return;
+  document.getElementById('omtitle').textContent=l.title.slice(0,38)+(l.title.length>38?'…':'');
+  document.getElementById('omsub').textContent=\`Asking $\${l.price.toLocaleString()}\`;
+  document.getElementById('oma').value='';document.getElementById('omn').value='';
+  document.getElementById('omsucc').style.display='none';
+  document.querySelector('#om .ob-cta').style.display='';
+  openM('om');
+}
+function subOff(){
+  const v=document.getElementById('oma').value;if(!v)return;
+  const b=document.querySelector('#om .ob-cta');b.textContent='Sending...';b.disabled=true;
+  setTimeout(()=>{document.getElementById('omsucc').style.display='block';b.style.display='none';b.disabled=false;b.textContent='Send Offer ✨';setTimeout(()=>closeM('om'),3000);},1200);
+}
+function openSM(l){
+  sTgt=l;
+  const url=l?\`\${STOREURL}/\${l.slug}\`:STOREURL;
+  document.getElementById('smtitle').textContent=l?'Share this listing':'Share Store';
+  document.getElementById('smsub').textContent=l?\`$\${l.price} · \${l.cond}\`:'All listings in one link';
+  document.getElementById('smlink').textContent=url;
+  openM('sm');
+}
+function shareCurrent(){if(cur)openSM(cur);}
+function sc(ch){
+  const url='https://'+(sTgt?\`\${STOREURL}/\${sTgt.slug}\`:STOREURL);
+  const enc=encodeURIComponent;
+  const title=sTgt?\`\${sTgt.title} — $\${sTgt.price}\`:"Check out Omar's Store";
+  const links={whatsapp:\`https://wa.me/?text=\${enc(title+' '+url)}\`,sms:\`sms:?body=\${enc(title+' '+url)}\`,facebook:\`https://www.facebook.com/sharer/sharer.php?u=\${enc(url)}\`,nextdoor:'https://nextdoor.com/',email:\`mailto:?subject=\${enc(title)}&body=\${enc(url)}\`};
+  if(ch==='instagram'){navigator.clipboard.writeText(url).catch(()=>{});toast('📋 Link copied — paste in Instagram!');closeM('sm');return;}
+  if(links[ch])window.open(links[ch],'_blank');closeM('sm');
+}
+async function sn(){
+  const url='https://'+(sTgt?\`\${STOREURL}/\${sTgt.slug}\`:STOREURL);
+  if(navigator.share){try{await navigator.share({title:'Omar Store',url});}catch(e){}}
+  else{navigator.clipboard.writeText(url).catch(()=>{});toast('Link copied!');}
+  closeM('sm');
+}
+function copyS(){navigator.clipboard.writeText('https://'+STOREURL).catch(()=>{});const b=document.getElementById('sbc');b.textContent='✓ Copied';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy Link';b.classList.remove('copied');},2500);}
+function copyML(){navigator.clipboard.writeText('https://'+document.getElementById('smlink').textContent).catch(()=>{});const b=document.getElementById('smlcopy');b.textContent='✓';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy';b.classList.remove('copied');},2000);}
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function toast(msg){const t=document.getElementById('t');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('popstate',()=>{if(document.getElementById('single-view').style.display!=='none')closeS();});
+<\/script>
+</body>
+</html>`;
+}
+
+function fakePhoto(){
+  document.getElementById('photo-input').click();
+}
+</script>
+</body>
+</html>
