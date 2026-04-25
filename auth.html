@@ -357,8 +357,8 @@ html,body{background:#fffef8;font-family:var(--ff);color:var(--ink);min-height:1
 // Replace with your Supabase project values
 // Enable Phone auth in: Supabase Dashboard → Authentication → Providers → Phone
 // Set your Twilio credentials there (SID, Auth Token, phone number)
-const SUPABASE_URL  = localStorage.getItem('sb_url')  || 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_ANON = localStorage.getItem('sb_anon') || 'YOUR_ANON_KEY';
+const SUPABASE_URL  = 'https://sbwcjvdhacxkxbrckanv.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_B19hwQ9hhcfx3-O6SAqxRw_TLslozqo';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 let plan       = 'consumer';
