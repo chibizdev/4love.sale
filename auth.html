@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4sale.love — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800;900&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:   #0d0a1a;
+  --p:     #7c3aed;
+  --p2:    #a78bfa;
+  --g:     #16a34a;
+  --g2:    #4ade80;
+  --gold:  #f59e0b;
+  --bg:    #f7f4ff;
+  --w:     #ffffff;
+  --rule:  #ddd4f8;
+  --muted: #7c6faa;
+  --rb: linear-gradient(90deg,#ff4d4d,#ff9a00,#ffe600,#4ade80,#38bdf8,#818cf8,#e879f9);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 768px) { body { grid-template-columns: 1fr; } }
+
+/* ── ANIMATIONS ── */
+@keyframes rbShift { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes checkIn { from{transform:scale(0) rotate(-45deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+
+/* ── LEFT HERO ── */
+.hero {
+  background: var(--ink);
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 768px) { .hero { display: none; } }
+
+/* Ambient background blobs */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(124,58,237,.3), transparent),
+    radial-gradient(ellipse 50% 40% at 15% 85%, rgba(22,163,74,.2), transparent),
+    radial-gradient(ellipse 40% 30% at 60% 60%, rgba(245,158,11,.1), transparent);
+}
+.hero-rb {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--rb);
+  background-size: 200%;
+  animation: rbShift 3s linear infinite;
+}
+.hero-content { position: relative; z-index: 1; }
+
+.hero-logo {
+  font-family: 'Baloo 2', cursive;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 56px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-logo-dot {
+  width: 8px; height: 8px;
+  background: var(--g2);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.hero-headline {
+  font-family: 'Baloo 2', cursive;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+  margin-bottom: 20px;
+}
+.hero-headline em {
+  font-style: normal;
+  background: var(--rb);
+  background-size: 200%;
+  animation: rbShift 3s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,.55);
+  font-weight: 600;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 38ch;
+}
+
+.hero-features { display: flex; flex-direction: column; gap: 14px; }
+.hf {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  animation: fadeUp .5s ease both;
+}
+.hf:nth-child(1){animation-delay:.1s}
+.hf:nth-child(2){animation-delay:.2s}
+.hf:nth-child(3){animation-delay:.3s}
+.hf:nth-child(4){animation-delay:.4s}
+
+.hf-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.hf-text strong { color: #fff; font-size: 13px; display: block; margin-bottom: 2px; }
+.hf-text span { font-size: 12px; color: rgba(255,255,255,.45); font-weight: 600; }
+
+/* Hero stats */
+.hero-stats {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 32px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.hs-n {
+  font-family: 'Baloo 2', cursive;
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+}
+.hs-l {
+  font-size: 10px;
+  color: rgba(255,255,255,.35);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-weight: 700;
+}
+
+/* Floating emoji decorations */
+.hero-float {
+  position: absolute;
+  font-size: 32px;
+  animation: float 4s ease-in-out infinite;
+  opacity: .15;
+  user-select: none;
+  pointer-events: none;
+}
+.hero-float:nth-child(1) { top: 20%; right: 8%;  animation-delay: 0s; }
+.hero-float:nth-child(2) { top: 45%; right: 15%; animation-delay: 1s;  font-size: 24px; }
+.hero-float:nth-child(3) { top: 70%; right: 5%;  animation-delay: 2s;  font-size: 40px; }
+
+/* ── RIGHT AUTH PANEL ── */
+.auth-panel {
+  background: var(--w);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  position: relative;
+}
+@media (max-width: 768px) {
+  .auth-panel { padding: 32px 20px; min-height: 100vh; }
+}
+
+/* Mobile logo */
+.mobile-logo {
+  display: none;
+  font-family: 'Baloo 2', cursive;
+  font-size: 26px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 32px;
+}
+.mobile-logo .s { color: var(--g); }
+.mobile-logo .d { color: var(--p); }
+@media (max-width: 768px) { .mobile-logo { display: block; } }
+
+.auth-box { width: 100%; max-width: 400px; }
+
+/* ── SCREENS ── */
+.screen { display: none; animation: fadeUp .3s ease; }
+.screen.on { display: block; }
+
+/* ── EMAIL SCREEN ── */
+.auth-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--p);
+  margin-bottom: 8px;
+}
+.auth-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -.02em;
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+.auth-sub {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* Tab switcher */
+.auth-tabs {
+  display: flex;
+  background: var(--bg);
+  border: 2px solid var(--rule);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 24px;
+  gap: 4px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.auth-tab.on {
+  background: var(--w);
+  color: var(--p);
+  box-shadow: 0 2px 8px rgba(124,58,237,.15);
+}
+
+/* Field */
+.field { margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--bg);
+  border: 2px solid var(--rule);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  outline: none;
+  transition: all .2s;
+}
+.field input:focus {
+  border-color: var(--p);
+  background: var(--w);
+  box-shadow: 0 0 0 4px rgba(124,58,237,.1);
+}
+.field input::placeholder { color: #bbb; font-weight: 600; }
+
+/* Handle field prefix */
+.handle-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border: 2px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all .2s;
+}
+.handle-wrap:focus-within {
+  border-color: var(--p);
+  background: var(--w);
+  box-shadow: 0 0 0 4px rgba(124,58,237,.1);
+}
+.handle-pre {
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  background: var(--w);
+  border-right: 2px solid var(--rule);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.handle-inp {
+  flex: 1;
+  padding: 13px 12px;
+  background: transparent;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--p);
+  outline: none;
+}
+
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--p), #4f46e5);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.15), transparent);
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,.35); }
+.submit-btn:active { transform: translateY(0); }
+.submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: none;
+}
+.submit-btn.loading .btn-text { display: none; }
+.submit-btn.loading .spinner { display: block; }
+
+/* Error */
+.err-box {
+  display: none;
+  background: rgba(220,38,38,.07);
+  border: 1.5px solid rgba(220,38,38,.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #dc2626;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+.err-box.show { display: block; animation: fadeUp .2s ease; }
+
+/* ── SENT SCREEN ── */
+.sent-icon {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--g), #059669);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 24px;
+  animation: checkIn .4s cubic-bezier(0.175,0.885,0.32,1.275) both;
+  box-shadow: 0 8px 24px rgba(22,163,74,.3);
+}
+.sent-email-display {
+  display: inline-block;
+  background: var(--bg);
+  border: 2px solid var(--rule);
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--p);
+  margin-bottom: 20px;
+  word-break: break-all;
+}
+.sent-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.sent-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.sent-step-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--p);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ghost-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 2px solid var(--rule);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.ghost-btn:hover { border-color: var(--p); color: var(--p); }
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1.5px;
+  background: var(--rule);
+}
+
+/* ── SOCIAL PROOF ── */
+.social-proof {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1.5px solid var(--rule);
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+.sp-item { text-align: center; }
+.sp-n {
+  font-family: 'Baloo 2', cursive;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--p);
+}
+.sp-l {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+/* Terms */
+.terms {
+  margin-top: 16px;
+  font-size: 11px;
+  color: #ccc;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+}
+.terms a { color: var(--p); text-decoration: none; font-weight: 700; }
+
+/* ── SIGNUP EXTRA FIELDS ── */
+.signup-fields { display: none; }
+.signup-fields.on { display: block; animation: fadeUp .2s ease; }
+
+/* New user badge */
+.new-user-note {
+  background: linear-gradient(135deg, rgba(124,58,237,.07), rgba(22,163,74,.05));
+  border: 1.5px solid var(--rule);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 16px;
+  display: none;
+  line-height: 1.5;
+}
+.new-user-note.show { display: block; animation: fadeUp .2s ease; }
+.new-user-note strong { color: var(--p); }
+</style>
+</head>
+<body>
+
+<!-- ── LEFT HERO ── -->
+<div class="hero">
+  <div class="hero-rb"></div>
+
+  <!-- Floating decoration -->
+  <div class="hero-float">🏷️</div>
+  <div class="hero-float">🏠</div>
+  <div class="hero-float">🔧</div>
+
+  <div class="hero-content">
+    <div class="hero-logo">
+      4sale.love
+      <div class="hero-logo-dot"></div>
+    </div>
+
+    <h1 class="hero-headline">
+      Your store.<br>
+      Your link.<br>
+      <em>Your terms.</em>
+    </h1>
+
+    <p class="hero-sub">
+      List once, sell everywhere. One page for your items, services, and rentals — shareable like a social profile.
+    </p>
+
+    <div class="hero-features">
+      <div class="hf">
+        <div class="hf-icon">📸</div>
+        <div class="hf-text">
+          <strong>AI Listing Generator</strong>
+          <span>Drop a photo → AI writes the perfect listing</span>
+        </div>
+      </div>
+      <div class="hf">
+        <div class="hf-icon">🚀</div>
+        <div class="hf-text">
+          <strong>Push to 6 Platforms</strong>
+          <span>Craigslist, Facebook, eBay, OfferUp, Mercari, Nextdoor</span>
+        </div>
+      </div>
+      <div class="hf">
+        <div class="hf-icon">🤝</div>
+        <div class="hf-text">
+          <strong>AI Negotiation Agent</strong>
+          <span>Handles every offer 24/7 at your floor price</span>
+        </div>
+      </div>
+      <div class="hf">
+        <div class="hf-icon">🔗</div>
+        <div class="hf-text">
+          <strong>One Shareable Link</strong>
+          <span>4sale.love/you — items, services, rentals in one page</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div>
+      <div class="hs-n" id="stat-sellers">—</div>
+      <div class="hs-l">Sellers</div>
+    </div>
+    <div>
+      <div class="hs-n" id="stat-listings">—</div>
+      <div class="hs-l">Listings</div>
+    </div>
+    <div>
+      <div class="hs-n" id="stat-deals">—</div>
+      <div class="hs-l">Deals closed</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RIGHT AUTH PANEL ── -->
+<div class="auth-panel">
+  <div class="auth-box">
+
+    <div class="mobile-logo">
+      4<span class="s">sale</span><span class="d">.</span>love
+    </div>
+
+    <!-- ════ EMAIL SCREEN ════ -->
+    <div class="screen on" id="screen-email">
+
+      <!-- Sign in / Sign up tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab on" id="tab-signin" onclick="setMode('signin')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="setMode('signup')">Create Account</button>
+      </div>
+
+      <div class="err-box" id="err-box"></div>
+
+      <div id="signin-header">
+        <div class="auth-eyebrow">Welcome back</div>
+        <h1 class="auth-title">Sign in to your store</h1>
+        <p class="auth-sub">We'll email you a magic link — no password needed.</p>
+      </div>
+
+      <div id="signup-header" style="display:none">
+        <div class="auth-eyebrow">Free to start</div>
+        <h1 class="auth-title">Claim your store page</h1>
+        <p class="auth-sub">Get your link at 4sale.love/yourname — free forever for up to 5 listings.</p>
+      </div>
+
+      <!-- Signup extra fields -->
+      <div class="signup-fields" id="signup-fields">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="input-name" placeholder="First Last" autocomplete="name">
+        </div>
+        <div class="field">
+          <label>Your Handle — your link</label>
+          <div class="handle-wrap">
+            <span class="handle-pre">4sale.love/</span>
+            <input class="handle-inp" type="text" id="input-handle" placeholder="artloft" autocomplete="off" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'')">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email address</label>
+        <input
+          type="email"
+          id="input-email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          onkeydown="if(event.key==='Enter')sendMagicLink()"
+        >
+      </div>
+
+      <div class="new-user-note" id="new-user-note">
+        ✨ <strong>New here?</strong> We'll create your store at <strong id="preview-handle">4sale.love/you</strong> — fill in your handle above and hit the button.
+      </div>
+
+      <button class="submit-btn" id="send-btn" onclick="sendMagicLink()">
+        <span class="btn-text">✉️ Send Magic Link</span>
+        <div class="spinner"></div>
+      </button>
+
+      <div class="social-proof">
+        <div class="sp-item"><div class="sp-n" id="sp-sellers">—</div><div class="sp-l">Sellers</div></div>
+        <div class="sp-item"><div class="sp-n" id="sp-listings">—</div><div class="sp-l">Listings</div></div>
+        <div class="sp-item"><div class="sp-n" id="sp-deals">—</div><div class="sp-l">Deals</div></div>
+      </div>
+
+      <p class="terms">
+        By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.<br>
+        No spam. No passwords. Just your store.
+      </p>
+    </div>
+
+    <!-- ════ SENT SCREEN ════ -->
+    <div class="screen" id="screen-sent">
+      <div style="text-align:center">
+        <div class="sent-icon">✉️</div>
+        <div class="auth-title" style="margin-bottom:8px">Check your inbox!</div>
+        <p class="auth-sub">We sent a magic link to:</p>
+        <div class="sent-email-display" id="sent-email-display">you@example.com</div>
+      </div>
+
+      <div class="sent-steps">
+        <div class="sent-step">
+          <div class="sent-step-num">1</div>
+          <span>Open the email from <strong>4sale.love</strong></span>
+        </div>
+        <div class="sent-step">
+          <div class="sent-step-num">2</div>
+          <span>Click the <strong>"Sign in to 4sale.love"</strong> button</span>
+        </div>
+        <div class="sent-step">
+          <div class="sent-step-num">3</div>
+          <span>You're in — your store is ready 🎉</span>
+        </div>
+      </div>
+
+      <p class="auth-sub" style="font-size:13px;margin-bottom:16px">
+        Link expires in 1 hour. Check spam if you don't see it.
+      </p>
+
+      <button class="ghost-btn" onclick="resend()" id="resend-btn">
+        Resend magic link
+      </button>
+
+      <div class="divider" style="margin:16px 0 10px">or</div>
+
+      <button class="ghost-btn" onclick="showScreen('screen-email')">
+        ← Use a different email
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://sbwcjvdhacxkxbrckanv.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_B19hwQ9hhcfx3-O6SAqxRw_TLslozqo';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let currentMode = 'signin';  // 'signin' | 'signup'
+let lastEmail   = '';
+
+// ── MODE TOGGLE ───────────────────────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+
+  document.getElementById('tab-signin').classList.toggle('on', mode === 'signin');
+  document.getElementById('tab-signup').classList.toggle('on', mode === 'signup');
+
+  document.getElementById('signin-header').style.display = mode === 'signin' ? 'block' : 'none';
+  document.getElementById('signup-header').style.display = mode === 'signup' ? 'block' : 'none';
+
+  const sf = document.getElementById('signup-fields');
+  sf.classList.toggle('on', mode === 'signup');
+
+  const sendBtn = document.getElementById('send-btn');
+  sendBtn.querySelector('.btn-text').textContent =
+    mode === 'signin' ? '✉️ Send Magic Link' : '🚀 Create My Store';
+
+  hideErr();
+}
+
+// ── PREVIEW HANDLE ────────────────────────────────────────────────────────
+document.getElementById('input-handle')?.addEventListener('input', e => {
+  const val = e.target.value || 'you';
+  const el = document.getElementById('preview-handle');
+  if (el) el.textContent = `4sale.love/${val}`;
+});
+
+// ── SEND MAGIC LINK ───────────────────────────────────────────────────────
+async function sendMagicLink() {
+  const email  = document.getElementById('input-email').value.trim();
+  const btn    = document.getElementById('send-btn');
+
+  if (!email || !email.includes('@')) {
+    showErr('Please enter a valid email address.');
+    return;
+  }
+
+  // Signup validation
+  if (currentMode === 'signup') {
+    const name   = document.getElementById('input-name').value.trim();
+    const handle = document.getElementById('input-handle').value.trim();
+    if (!name)   { showErr('Please enter your name.'); return; }
+    if (!handle) { showErr('Please choose a handle for your store link.'); return; }
+    if (handle.length < 2) { showErr('Handle must be at least 2 characters.'); return; }
+  }
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  hideErr();
+  lastEmail = email;
+
+  try {
+    // Build redirect URL — goes to /app after magic link click
+    const redirectTo = window.location.origin + '/app';
+
+    // User metadata for signup
+    const metadata = currentMode === 'signup' ? {
+      full_name:  document.getElementById('input-name').value.trim(),
+      username:   document.getElementById('input-handle').value.trim().toLowerCase(),
+      store_name: document.getElementById('input-name').value.trim(),
+    } : {};
+
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: redirectTo,
+        data: metadata,
+        shouldCreateUser: true,  // creates account on first use
+      }
+    });
+
+    if (error) throw error;
+
+    // Show sent screen
+    document.getElementById('sent-email-display').textContent = email;
+    showScreen('screen-sent');
+
+    // If signup — store metadata locally so builder can pre-fill
+    if (currentMode === 'signup') {
+      localStorage.setItem('4sale_pending_name',   metadata.full_name);
+      localStorage.setItem('4sale_pending_handle', metadata.username);
+      localStorage.setItem('4sale_store_name',     metadata.full_name);
+      localStorage.setItem('4sale_username',        metadata.username);
+    }
+
+  } catch(err) {
+    showErr(err.message || 'Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
+// ── RESEND ─────────────────────────────────────────────────────────────────
+async function resend() {
+  const btn = document.getElementById('resend-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  try {
+    await sb.auth.signInWithOtp({
+      email: lastEmail,
+      options: { emailRedirectTo: window.location.origin + '/app' }
+    });
+    btn.textContent = '✓ Sent! Check your inbox';
+    setTimeout(() => {
+      btn.textContent = 'Resend magic link';
+      btn.disabled = false;
+    }, 5000);
+  } catch {
+    btn.textContent = 'Resend magic link';
+    btn.disabled = false;
+  }
+}
+
+// ── SCREEN NAV ─────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id)?.classList.add('on');
+}
+
+// ── ERR ─────────────────────────────────────────────────────────────────────
+function showErr(msg) {
+  const el = document.getElementById('err-box');
+  el.textContent = '⚠️ ' + msg;
+  el.classList.add('show');
+}
+function hideErr() {
+  document.getElementById('err-box').classList.remove('show');
+}
+
+// ── AUTH STATE CHANGE ──────────────────────────────────────────────────────
+// If they land on auth.html already logged in — go straight to app
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (session?.user && event === 'SIGNED_IN') {
+    // Save user profile to localStorage
+    const u = session.user;
+    const meta = u.user_metadata || {};
+    if (meta.username)   localStorage.setItem('4sale_username',   meta.username);
+    if (meta.full_name)  localStorage.setItem('4sale_store_name', meta.full_name);
+    // Upsert profile in DB
+    try {
+      await sb.from('users').upsert({
+        id:         u.id,
+        email:      u.email,
+        username:   meta.username  || localStorage.getItem('4sale_username')  || '',
+        store_name: meta.full_name || localStorage.getItem('4sale_store_name')|| '',
+        created_at: new Date().toISOString(),
+        last_active_at: new Date().toISOString(),
+      }, { onConflict: 'id' });
+    } catch(e) { console.warn('profile upsert:', e.message); }
+
+    setTimeout(() => { window.location.href = '/app'; }, 300);
+  }
+});
+
+// ── SOCIAL PROOF COUNTS ────────────────────────────────────────────────────
+async function loadCounts() {
+  try {
+    const [{ count: u }, { count: l }] = await Promise.all([
+      sb.from('users').select('*',    { count: 'exact', head: true }),
+      sb.from('listings').select('*', { count: 'exact', head: true }),
+    ]);
+    const sellers  = u  || 0;
+    const listings = l  || 0;
+    const deals    = Math.floor(listings * 0.3);  // estimated
+
+    const fmt = n => n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n);
+    [
+      ['stat-sellers',  sellers],
+      ['stat-listings', listings],
+      ['stat-deals',    deals],
+      ['sp-sellers',    sellers],
+      ['sp-listings',   listings],
+      ['sp-deals',      deals],
+    ].forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) animCount(el, val);
+    });
+  } catch {}
+}
+
+function animCount(el, target) {
+  let c = 0;
+  const step = Math.max(1, Math.ceil(target / 40));
+  const iv = setInterval(() => {
+    c = Math.min(c + step, target);
+    el.textContent = c >= 1000 ? (c/1000).toFixed(1)+'k' : c;
+    if (c >= target) clearInterval(iv);
+  }, 40);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  loadCounts();
+  // Check URL params — if came from a confirmation link error
+  const hash = window.location.hash;
+  if (hash.includes('error=')) {
+    showErr('Link expired or already used — request a new one below.');
+  }
+  // Default focus
+  setTimeout(() => document.getElementById('input-email')?.focus(), 100);
+});
+</script>
+</body>
+</html>
