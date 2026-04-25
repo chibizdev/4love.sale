@@ -1,0 +1,5 @@
+/        /auth.html    200!
+/auth    /auth.html    200!
+/app     /app.html     200
+/app/*   /app.html     200
+/*       /app.html     200
