@@ -1,6 +1,12 @@
 [build]
   publish = "."
 
+# ── Edge Functions ──────────────────────────────────────────────────────────
+[[edge_functions]]
+  path = "/api/nft/*"
+  function = "nft-metadata"
+
+# ── Redirects ───────────────────────────────────────────────────────────────
 [[redirects]]
   from = "/"
   to = "/auth.html"
@@ -24,6 +30,19 @@
   status = 200
 
 [[redirects]]
-  from = "/*"
-  to = "/app.html"
+  from = "/embed"
+  to = "/embed.html"
   status = 200
+
+[[redirects]]
+  from = "/embed/*"
+  to = "/embed.html"
+  status = 200
+
+[[redirects]]
+  from = "/:handle"
+  to = "/store.html"
+  status = 200
+
+# ── Env vars needed for edge functions ─────────────────────────────────────
+# Add SUPABASE_SERVICE_KEY in Netlify dashboard → Site config → Env vars

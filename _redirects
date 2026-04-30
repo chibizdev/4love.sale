@@ -1,5 +1,18 @@
-/        /auth.html    200!
-/auth    /auth.html    200!
-/app     /app.html     200
-/app/*   /app.html     200
-/*       /app.html     200
+# ── 4sale.love routing ──────────────────────────────────────────────────────
+# Root → login
+/              /auth.html    200!
+/auth          /auth.html    200!
+
+# Admin app (gated)
+/app           /app.html     200
+/app/*         /app.html     200
+
+# Embed widget — live sign
+/embed         /embed.html   200
+/embed/*       /embed.html   200
+
+# NFT metadata API (handled by Netlify Edge Function)
+/api/nft/*     /.netlify/edge-functions/nft-metadata   200
+
+# Public storefronts — /:handle
+/:handle       /store.html   200

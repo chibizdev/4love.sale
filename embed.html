@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4sale Sign</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ── RESET — iframe-safe, no scrollbars ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:transparent}
+@keyframes rbShift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,58,237,.4)}50%{box-shadow:0 0 40px rgba(124,58,237,.8),0 0 80px rgba(22,163,74,.3)}}
+
+/* ── SIGN CONTAINER ── */
+.sign-wrap{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  padding:8px;
+  animation:fadeIn .4s ease;
+}
+
+.sign{
+  width:100%;
+  max-width:400px;
+  border-radius:20px;
+  overflow:hidden;
+  cursor:pointer;
+  position:relative;
+  animation:float 5s ease-in-out infinite, glow 4s ease-in-out infinite;
+  transition:transform .2s, box-shadow .2s;
+  box-shadow:0 12px 40px rgba(0,0,0,.35);
+}
+.sign:hover{transform:scale(1.02) rotate(0deg) !important;animation-play-state:paused}
+
+/* Rainbow border */
+.sign::before{
+  content:'';position:absolute;inset:-2px;border-radius:22px;
+  background:linear-gradient(90deg,#ff4d4d,#ff9a00,#ffe600,#4ade80,#38bdf8,#818cf8,#e879f9,#ff4d4d);
+  background-size:300%;
+  animation:rbShift 3s linear infinite;
+  z-index:-1;
+}
+
+/* ── SIGN HEADER (dark hero) ── */
+.sign-hero{
+  background:var(--profile-bg,#0d0d0d);
+  padding:14px 14px 10px;
+  position:relative;
+  overflow:hidden;
+}
+.sign-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 10%,rgba(124,58,237,.35),transparent 40%),
+              radial-gradient(circle at 10% 80%,rgba(22,163,74,.2),transparent 40%);
+}
+.sign-rb{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ff4d4d,#ff9a00,#ffe600,#4ade80,#38bdf8,#818cf8,#e879f9);background-size:300%;animation:rbShift 3s linear infinite}
+.sign-inner{position:relative;z-index:1}
+
+.sign-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.sign-avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent,#7c3aed),var(--green,#16a34a));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:2px solid rgba(255,255,255,.15)}
+.sign-name{font-family:'Baloo 2',cursive;font-size:16px;font-weight:900;color:#fff;line-height:1;margin-bottom:2px;letter-spacing:-.02em}
+.sign-handle{font-size:10px;color:rgba(255,255,255,.45);font-family:monospace}
+
+/* Status pill */
+.sign-status{
+  margin-left:auto;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:10px;
+  font-weight:800;
+  flex-shrink:0;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.status-available{background:rgba(74,222,128,.2);color:#4ade80;border:1px solid rgba(74,222,128,.4)}
+.status-sold{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.4)}
+.status-pending{background:rgba(251,191,36,.2);color:#fbbf24;border:1px solid rgba(251,191,36,.4)}
+.status-rental{background:rgba(56,189,248,.2);color:#38bdf8;border:1px solid rgba(56,189,248,.4)}
+.status-service{background:rgba(168,85,247,.2);color:#c084fc;border:1px solid rgba(168,85,247,.4)}
+
+/* Stats row */
+.sign-stats{display:flex;gap:14px}
+.ss-n{font-size:18px;font-weight:900;color:#fff}
+.ss-l{font-size:8px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── SIGN BODY ── */
+.sign-body{background:var(--page-bg,#f5f3ef);padding:10px 12px}
+
+/* Featured item preview */
+.sign-featured{
+  background:var(--card-bg,#fff);
+  border:1.5px solid #e8e4dc;
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px;
+}
+.sign-feat-img{width:48px;height:48px;border-radius:8px;background:var(--item-bg,linear-gradient(135deg,#efe8ff,#e8f7ed));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background-size:cover;background-position:center}
+.sign-feat-title{font-size:12px;font-weight:800;color:var(--ink,#1a0a2e);line-height:1.3;margin-bottom:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sign-feat-price{font-size:16px;font-weight:900;color:var(--accent,#7c3aed)}
+.sign-feat-note{font-size:9px;color:#888;font-weight:700}
+
+/* Item chips */
+.sign-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.sign-chip{background:var(--card-bg,#fff);border:1.5px solid #e8e4dc;border-radius:20px;padding:4px 9px;font-size:10px;font-weight:800;color:var(--ink,#1a0a2e);display:flex;align-items:center;gap:4px}
+.sign-chip .chip-price{color:var(--accent,#7c3aed);font-size:10px}
+
+/* ── CTA ROW ── */
+.sign-cta{display:flex;gap:6px;flex-wrap:wrap}
+.sign-btn{flex:1;padding:8px 6px;border-radius:10px;border:none;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;min-width:0}
+.btn-view{background:linear-gradient(135deg,var(--accent,#7c3aed),var(--green,#16a34a));color:#fff}
+.btn-view:hover{opacity:.9;transform:translateY(-1px)}
+.btn-contact{background:var(--card-bg,#fff);border:1.5px solid #e8e4dc;color:var(--ink,#1a0a2e)}
+.btn-contact:hover{border-color:var(--accent,#7c3aed);color:var(--accent,#7c3aed)}
+.btn-share{background:var(--card-bg,#fff);border:1.5px solid #e8e4dc;color:var(--ink,#1a0a2e)}
+.btn-share:hover{border-color:#25d366;color:#25d366}
+.btn-mint{
+  background:linear-gradient(135deg,#1652f0,#0052ff);
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.btn-mint::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  background-size:200%;
+  animation:shimmer 2s infinite;
+}
+.btn-mint:hover{opacity:.9;transform:translateY(-1px)}
+.btn-mint.minted{background:linear-gradient(135deg,#059669,#16a34a)}
+
+/* ── NFT BADGE ── */
+.nft-badge{
+  display:none;
+  position:absolute;top:8px;right:8px;
+  background:linear-gradient(135deg,#1652f0,#0052ff);
+  color:#fff;border-radius:20px;padding:3px 8px;
+  font-size:9px;font-weight:800;
+  z-index:10;letter-spacing:.06em;
+  box-shadow:0 2px 8px rgba(22,82,240,.4);
+}
+.nft-badge.show{display:block;animation:fadeIn .3s ease}
+
+/* ── MINT MODAL ── */
+.mint-overlay{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:16px;
+}
+.mint-overlay.open{display:flex}
+.mint-modal{
+  background:#0d0d1a;border:2px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:24px;max-width:340px;width:100%;
+  color:#fff;animation:fadeIn .3s ease;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);
+}
+.mint-modal h3{font-family:'Baloo 2',cursive;font-size:20px;font-weight:900;margin-bottom:4px}
+.mint-modal p{font-size:12px;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:16px;line-height:1.5}
+.mint-preview{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;margin-bottom:16px}
+.mint-preview-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.mint-preview-row:last-child{border:none}
+.mint-preview-row span:first-child{color:rgba(255,255,255,.4)}
+.mint-preview-row span:last-child{color:#fff}
+.mint-price-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:13px;font-weight:800}
+.mint-price{font-size:20px;font-weight:900;color:#4ade80}
+.mint-actions{display:flex;gap:8px}
+.mint-cancel{flex:1;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:rgba(255,255,255,.6);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
+.mint-confirm{flex:2;padding:10px;background:linear-gradient(135deg,#1652f0,#0052ff);border:none;border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;position:relative;overflow:hidden;transition:opacity .15s}
+.mint-confirm:hover{opacity:.9}
+.mint-confirm:disabled{opacity:.5;cursor:not-allowed}
+.mint-status{font-size:11px;font-weight:700;margin-top:10px;text-align:center;min-height:16px;color:rgba(255,255,255,.5)}
+.mint-spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle}
+.wallet-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:800;margin-bottom:12px;cursor:pointer}
+.wallet-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+
+/* ── LOADER ── */
+.sign-loader{width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:10px;flex-direction:column}
+.sign-loader-spin{width:28px;height:28px;border:3px solid rgba(124,58,237,.2);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
+.sign-loader-txt{font-size:11px;color:rgba(100,80,150,.6);font-weight:700}
+
+/* Powered by */
+.sign-powered{position:absolute;bottom:6px;right:8px;font-size:8px;color:rgba(100,80,150,.4);font-weight:700;letter-spacing:.04em;z-index:5}
+</style>
+</head>
+<body>
+
+<div class="sign-wrap" id="sign-wrap">
+  <div class="sign-loader">
+    <div class="sign-loader-spin"></div>
+    <div class="sign-loader-txt">Loading sign…</div>
+  </div>
+</div>
+
+<!-- NFT Badge (shown after mint) -->
+<div class="nft-badge" id="nft-badge">⬡ NFT</div>
+
+<!-- Mint Modal -->
+<div class="mint-overlay" id="mint-overlay" onclick="if(event.target===this)closeMint()">
+  <div class="mint-modal">
+    <h3>⬡ Mint as NFT</h3>
+    <p>Turn this 4sale sign into a living digital object on Base. The NFT metadata updates automatically as your listing changes.</p>
+    <div class="wallet-chip" onclick="connectWallet()">
+      <div class="wallet-dot"></div>
+      <span id="wallet-label">Connect Wallet</span>
+    </div>
+    <div class="mint-preview" id="mint-preview"></div>
+    <div class="mint-price-row">
+      <span style="color:rgba(255,255,255,.5);font-size:12px">Mint price</span>
+      <span class="mint-price">FREE + gas</span>
+    </div>
+    <div class="mint-actions">
+      <button class="mint-cancel" onclick="closeMint()">Cancel</button>
+      <button class="mint-confirm" id="mint-confirm-btn" onclick="executeMint()" disabled>Connect wallet first</button>
+    </div>
+    <div class="mint-status" id="mint-status"></div>
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- ethers.js for Base wallet interaction -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.0/dist/ethers.umd.min.js"></script>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://sbwcjvdhacxkxbrckanv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_B19hwQ9hhcfx3-O6SAqxRw_TLslozqo';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Base mainnet config
+const BASE_CHAIN_ID    = '0x2105';   // 8453
+const BASE_RPC         = 'https://mainnet.base.org';
+const BASE_EXPLORER    = 'https://basescan.org';
+
+// 4sale NFT contract on Base (deploy this — ABI below)
+// Set to your deployed contract address after deployment
+const NFT_CONTRACT_ADDRESS = '';  // ← SET AFTER DEPLOY
+
+// ── GLOBALS ───────────────────────────────────────────────────────────────
+const handle = window.location.pathname
+  .replace(/^\/embed\//,'').replace(/^\/|\/$/g,'').split('/')[0].toLowerCase();
+
+let signData    = null;  // { user, listings, featured }
+let walletAddr  = null;
+let mintedTokenId = null;
+
+// ── BOOT ──────────────────────────────────────────────────────────────────
+loadSign();
+
+async function loadSign() {
+  if (!handle) { showError('No handle specified'); return; }
+  try {
+    const { data: user, error } = await sb
+      .from('users').select('*').eq('username', handle).single();
+    if (error || !user) { showError('Page not found'); return; }
+
+    const { data: listings } = await sb
+      .from('listings').select('*')
+      .eq('user_id', user.id).eq('status','active')
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    signData = {
+      user,
+      listings: listings || [],
+      featured: (listings||[])[0] || null,
+    };
+
+    renderSign();
+  } catch(e) {
+    showError('Load failed');
+    console.error(e);
+  }
+}
+
+// ── RENDER SIGN ───────────────────────────────────────────────────────────
+function renderSign() {
+  const { user, listings, featured } = signData;
+
+  // Parse design tokens
+  let D = {};
+  try { D = JSON.parse(user.design || '{}'); } catch(e) {}
+
+  const accent     = D.accent     || '#7c3aed';
+  const green      = D.green      || '#16a34a';
+  const profileBg  = D.profileBg  || '#0d0d0d';
+  const pageBg     = D.pageBg     || '#f5f3ef';
+  const cardBg     = D.cardBg     || '#ffffff';
+  const heroText   = D.heroText   || '#ffffff';
+  const itemBg     = D.itemBg     || 'linear-gradient(135deg,#efe8ff,#e8f7ed)';
+
+  // Apply CSS vars
+  const root = document.documentElement;
+  root.style.setProperty('--accent',      accent);
+  root.style.setProperty('--green',       green);
+  root.style.setProperty('--profile-bg',  profileBg);
+  root.style.setProperty('--page-bg',     pageBg);
+  root.style.setProperty('--card-bg',     cardBg);
+  root.style.setProperty('--hero-text',   heroText);
+  root.style.setProperty('--item-bg',     itemBg);
+  root.style.setProperty('--ink',         '#1a0a2e');
+
+  const storeName = user.store_name || user.username || handle;
+  const avatar    = user.avatar || '🏠';
+  const items     = listings.filter(l => !l.type || l.type === 'item');
+  const services  = listings.filter(l => l.type === 'service');
+  const rentals   = listings.filter(l => l.type === 'rental');
+
+  // Status
+  const totalListings = listings.length;
+  const statusClass   = totalListings > 0 ? 'status-available' : 'status-available';
+  const statusLabel   = totalListings > 0 ? '● Available' : '● Open';
+
+  // Featured item
+  let featuredHTML = '';
+  if (featured) {
+    const imgStyle = featured.photo_url
+      ? `background-image:url('${featured.photo_url}')`
+      : '';
+    featuredHTML = `
+      <div class="sign-featured">
+        <div class="sign-feat-img" style="${imgStyle}">
+          ${featured.photo_url ? '' : (featured.emoji || '📦')}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="sign-feat-title">${esc(featured.title)}</div>
+          <div class="sign-feat-price">$${featured.price}</div>
+          <div class="sign-feat-note">${esc(featured.condition||'Make an offer')}</div>
+        </div>
+      </div>`;
+  }
+
+  // Chips (up to 3 more items)
+  const chipItems = listings.slice(featured ? 1 : 0, 4);
+  const chipsHTML = chipItems.length
+    ? `<div class="sign-chips">
+        ${chipItems.map(l =>
+          `<div class="sign-chip">
+            <span>${l.emoji||'📦'}</span>
+            <span>${esc(l.title.slice(0,20))}</span>
+            <span class="chip-price">$${l.price}</span>
+          </div>`
+        ).join('')}
+        ${listings.length > 4 ? `<div class="sign-chip">+${listings.length-4} more</div>` : ''}
+      </div>`
+    : '';
+
+  const publicURL = `https://4sale.love/${handle}`;
+
+  document.getElementById('sign-wrap').innerHTML = `
+    <div class="sign" onclick="openFull()">
+      <div class="sign-hero" style="background:${profileBg}">
+        <div class="sign-rb"></div>
+        <div class="sign-inner">
+          <div class="sign-top">
+            <div class="sign-avatar">${avatar}</div>
+            <div style="flex:1;min-width:0">
+              <div class="sign-name">${esc(storeName)}</div>
+              <div class="sign-handle">4sale.love/${user.username}</div>
+            </div>
+            <div class="sign-status ${statusClass}">${statusLabel}</div>
+          </div>
+          <div class="sign-stats">
+            <div><div class="ss-n">${items.length}</div><div class="ss-l">Items</div></div>
+            <div><div class="ss-n">${services.length}</div><div class="ss-l">Services</div></div>
+            <div><div class="ss-n">${rentals.length}</div><div class="ss-l">Rentals</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="sign-body" style="background:${pageBg}">
+        ${featuredHTML}
+        ${chipsHTML}
+        <div class="sign-cta" onclick="event.stopPropagation()">
+          <button class="sign-btn btn-view" onclick="openFull()">
+            👁 View
+          </button>
+          <button class="sign-btn btn-contact" onclick="openContact()">
+            💬 Contact
+          </button>
+          <button class="sign-btn btn-share" onclick="shareSign()">
+            🔗 Share
+          </button>
+          <button class="sign-btn btn-mint" id="mint-btn" onclick="openMint()">
+            ⬡ Mint
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="sign-powered">4sale.love</div>
+  `;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────
+function openFull() {
+  const url = `https://4sale.love/${handle}`;
+  if (window.parent !== window) {
+    window.open(url, '_blank');
+  } else {
+    window.location.href = url;
+  }
+}
+
+function openContact() {
+  const url = `https://4sale.love/${handle}#contact`;
+  window.open(url, '_blank');
+}
+
+async function shareSign() {
+  const url   = `https://4sale.love/${handle}`;
+  const embed = `https://4sale.love/embed/${handle}`;
+  const name  = signData?.user?.store_name || handle;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: name + ' — 4sale.love', url });
+      return;
+    } catch(e) {}
+  }
+  // Fallback: copy embed code
+  const code = `<iframe src="${embed}" width="380" height="280" style="border:none;border-radius:20px" allowtransparency="true"></iframe>`;
+  navigator.clipboard.writeText(url).catch(()=>{});
+  showToast('🔗 Link copied! Embed code also available.');
+}
+
+// ── NFT MINTING ───────────────────────────────────────────────────────────
+async function openMint() {
+  if (!signData) return;
+  const { user, featured, listings } = signData;
+
+  // Populate mint preview
+  const preview = document.getElementById('mint-preview');
+  if (preview) {
+    preview.innerHTML = [
+      ['Name',     user.store_name || handle],
+      ['Handle',   '4sale.love/' + handle],
+      ['Listings', listings.length + ' active'],
+      ['Network',  'Base (Mainnet)'],
+      ['Standard', 'ERC-721'],
+      ['Metadata', 'Dynamic (live)'],
+    ].map(([k,v]) =>
+      `<div class="mint-preview-row"><span>${k}</span><span>${esc(String(v))}</span></div>`
+    ).join('');
+  }
+
+  document.getElementById('mint-overlay').classList.add('open');
+}
+
+function closeMint() {
+  document.getElementById('mint-overlay').classList.remove('open');
+}
+
+async function connectWallet() {
+  if (!window.ethereum) {
+    showMintStatus('🦊 Install MetaMask or a Web3 wallet to mint on Base');
+    return;
+  }
+  try {
+    showMintStatus('Connecting wallet…');
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const accounts  = await provider.send('eth_requestAccounts', []);
+    walletAddr = accounts[0];
+
+    // Switch to Base
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: BASE_CHAIN_ID }],
+      });
+    } catch(switchErr) {
+      if (switchErr.code === 4902) {
+        // Add Base network
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: BASE_CHAIN_ID,
+            chainName: 'Base',
+            nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+            rpcUrls: [BASE_RPC],
+            blockExplorerUrls: [BASE_EXPLORER],
+          }],
+        });
+      }
+    }
+
+    const short = walletAddr.slice(0,6) + '…' + walletAddr.slice(-4);
+    document.getElementById('wallet-label').textContent = short;
+    document.querySelector('.wallet-dot').style.background = '#4ade80';
+    const btn = document.getElementById('mint-confirm-btn');
+    if (btn) { btn.disabled = false; btn.textContent = '⬡ Mint on Base'; }
+    showMintStatus('✓ Wallet connected on Base');
+  } catch(e) {
+    showMintStatus('Connection cancelled');
+  }
+}
+
+async function executeMint() {
+  if (!walletAddr) { connectWallet(); return; }
+  if (!NFT_CONTRACT_ADDRESS) {
+    showMintStatus('⚠ NFT contract not deployed yet — coming soon!');
+    return;
+  }
+
+  const btn = document.getElementById('mint-confirm-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="mint-spinner"></span>Minting…';
+  showMintStatus('Confirm transaction in your wallet…');
+
+  try {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer   = await provider.getSigner();
+
+    // Minimal ERC-721 mint ABI
+    const abi = [
+      'function mint(address to, string calldata tokenURI) external returns (uint256)',
+    ];
+    const contract = new ethers.Contract(NFT_CONTRACT_ADDRESS, abi, signer);
+
+    // Token URI points to our dynamic metadata endpoint
+    const tokenURI = `https://4sale.love/api/nft/${handle}`;
+
+    const tx = await contract.mint(walletAddr, tokenURI);
+    showMintStatus('⏳ Transaction submitted… waiting for confirmation');
+    const receipt = await tx.wait();
+
+    // Extract token ID from event logs
+    mintedTokenId = receipt.logs?.[0]?.topics?.[3]
+      ? parseInt(receipt.logs[0].topics[3], 16) : '?';
+
+    showMintStatus(`✅ Minted! Token #${mintedTokenId} on Base`);
+    btn.textContent = '✓ Minted!';
+    btn.style.background = 'linear-gradient(135deg,#059669,#16a34a)';
+
+    // Save mint record to Supabase
+    await sb.from('nfts').upsert({
+      handle,
+      token_id:    mintedTokenId,
+      owner:       walletAddr,
+      contract:    NFT_CONTRACT_ADDRESS,
+      chain:       'base',
+      token_uri:   `https://4sale.love/api/nft/${handle}`,
+      minted_at:   new Date().toISOString(),
+    }).select();
+
+    // Show NFT badge on sign
+    document.getElementById('nft-badge').classList.add('show');
+    document.getElementById('mint-btn').classList.add('minted');
+    document.getElementById('mint-btn').textContent = '✓ NFT';
+
+    setTimeout(closeMint, 3000);
+
+  } catch(e) {
+    const msg = e.code === 4001 ? 'Transaction rejected' :
+                e.code === -32603 ? 'Contract error — check gas' :
+                e.message?.slice(0,60) || 'Mint failed';
+    showMintStatus('✗ ' + msg);
+    btn.disabled = false;
+    btn.textContent = '⬡ Try Again';
+  }
+}
+
+// ── NFT METADATA GENERATOR (also serves /api/nft/:handle) ─────────────────
+// This function generates the ERC-721 metadata JSON for any handle.
+// In production, serve this from a Netlify Edge Function or Supabase Edge Function
+// at GET /api/nft/:handle → returns application/json
+function generateNFTMetadata(user, listings) {
+  const featured  = listings[0];
+  const storeName = user.store_name || user.username;
+  const handle    = user.username;
+
+  return {
+    name:         `${storeName} — 4sale.love`,
+    description:  user.bio || `${storeName}'s personal commerce page on 4sale.love. Items, services & rentals.`,
+    image:        `https://4sale.love/api/nft/${handle}/image`,   // OG card image
+    external_url: `https://4sale.love/${handle}`,
+    animation_url:`https://4sale.love/embed/${handle}`,           // ← LIVE EMBED as NFT animation
+    attributes: [
+      { trait_type: 'Handle',      value: handle },
+      { trait_type: 'Status',      value: listings.length > 0 ? 'Active' : 'Open' },
+      { trait_type: 'City',        value: user.location || 'Chicago' },
+      { trait_type: 'Listings',    value: listings.length, display_type: 'number' },
+      { trait_type: 'Category',    value: featured?.type === 'rental' ? 'Rental' : featured?.type === 'service' ? 'Service' : 'Marketplace' },
+      { trait_type: 'Price',       value: featured ? `$${featured.price}` : 'N/A' },
+      { trait_type: 'Platform',    value: '4sale.love' },
+      { trait_type: 'Chain',       value: 'Base' },
+    ],
+  };
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showMintStatus(msg) {
+  const el = document.getElementById('mint-status');
+  if (el) el.textContent = msg;
+}
+
+function showError(msg) {
+  document.getElementById('sign-wrap').innerHTML = `
+    <div style="text-align:center;padding:24px;color:#888">
+      <div style="font-size:28px;margin-bottom:8px">🏷️</div>
+      <div style="font-size:13px;font-weight:700">${msg}</div>
+      <a href="https://4sale.love" style="display:inline-block;margin-top:12px;font-size:11px;color:#7c3aed;font-weight:800;text-decoration:none">Create your page →</a>
+    </div>`;
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  Object.assign(t.style,{position:'fixed',bottom:'12px',left:'50%',transform:'translateX(-50%)',background:'#1a0a2e',color:'#fff',padding:'8px 16px',borderRadius:'20px',fontSize:'11px',fontWeight:'800',zIndex:'999',whiteSpace:'nowrap'});
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+</script>
+</body>
+</html>
