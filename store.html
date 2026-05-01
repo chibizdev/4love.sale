@@ -496,16 +496,133 @@ function sfOpenInquiry(item, price) {
   document.getElementById('sf-modal').classList.add('open');
 }
 function sfCloseModal() { document.getElementById('sf-modal').classList.remove('open'); }
-function sfSubmit() {
-  const n = document.getElementById('sf-name')?.value.trim();
-  const c = document.getElementById('sf-contact')?.value.trim();
-  if (!n || !c) { alert('Please enter your name and contact info.'); return; }
+async function sfSubmit() {
+  const n     = document.getElementById('sf-name')?.value.trim();
+  const c     = document.getElementById('sf-contact')?.value.trim();
+  const item  = document.getElementById('sf-item')?.value.trim();
+  const price = document.getElementById('sf-price')?.value.trim();
+  const msg   = document.getElementById('sf-msg')?.value.trim();
+  if (!n || !c) { alert('Please fill in your name and contact info.'); return; }
   sfCloseModal();
-  const t = document.createElement('div');
-  Object.assign(t.style,{position:'fixed',bottom:'80px',right:'16px',zIndex:'999',background:'#16a34a',color:'#fff',padding:'12px 18px',borderRadius:'999px',fontSize:'13px',fontWeight:'800',fontFamily:'Nunito,sans-serif',boxShadow:'0 8px 24px rgba(0,0,0,.3)'});
-  t.textContent = '✅ Message sent! You\'ll hear back shortly.';
-  document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),400); }, 3500);
+  sfToast('Sending your offer...', '#7c3aed');
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const sb = createClient('https://sbwcjvdhacxkxbrckanv.supabase.co','sb_publishable_B19hwQ9hhcfx3-O6SAqxRw_TLslozqo');
+    const { data: seller } = await sb.from('users').select('id,store_name,bio').eq('username', handle).single();
+    let listing = null;
+    if (item && seller?.id) {
+      const { data: l } = await sb.from('listings').select('*').eq('user_id',seller.id).ilike('title','%'+item+'%').limit(1).single();
+      listing = l;
+    }
+    const offerNum = parseFloat(String(price).replace(/[^0-9.]/g,'')) || null;
+    const { data: offer, error: oErr } = await sb.from('negotiations').insert({
+      seller_id: seller?.id||null, seller_handle: handle,
+      buyer_name: n, buyer_contact: c,
+      item_title: item||listing?.title||'', item_id: listing?.id||null,
+      offer_price: offerNum, ask_price: listing?.price||null,
+      message: msg||'', status: 'pending', created_at: new Date().toISOString(),
+    }).select().single();
+    if (oErr) throw oErr;
+    const reply = await sfNegotiationAgent({ offer, listing, seller, buyerName:n, offerPrice:price, message:msg });
+    sfToast('Agent reply: ' + reply, '#7c3aed', 8000);
+  } catch(e) {
+    console.warn('Offer error:', e.message);
+    sfToast('Message sent! You\'ll hear back shortly.', '#16a34a');
+  }
+}
+
+// AI VALUE NEGOTIATION AGENT
+// Defends value, not floor price. Uses Groq with value-based prompt.
+async function sfNegotiationAgent({ offer, listing, seller, buyerName, offerPrice, message }) {
+  const askPrice  = listing?.price ? parseFloat(listing.price) : 0;
+  const offerNum  = parseFloat(String(offerPrice||0).replace(/[^0-9.]/g,'')) || 0;
+  const title     = listing?.title || offer?.item_title || 'this item';
+  const condition = listing?.condition || 'Good';
+  const desc      = listing?.description || '';
+  const storeName = seller?.store_name || handle;
+  const bio       = seller?.bio || '';
+  const pct = askPrice > 0 && offerNum > 0 ? (offerNum/askPrice)*100 : 0;
+  const stance = pct===0?'inquiry':pct>=95?'accept':pct>=80?'light_counter':pct>=60?'firm_counter':'decline_counter';
+
+  // Try Groq AI
+  try {
+    const groqKey = window._groqKey || '';
+    if (!groqKey) throw new Error('no key');
+    const systemLines = [
+      'You are a confident seller AI agent for "' + storeName + '" on 4sale.love.',
+      'Rules:',
+      '- NEVER say floor price or lowest I can go',
+      '- ALWAYS argue the VALUE: condition, replacement cost, quality, demand',
+      '- Be warm but firm. You believe in what you sell.',
+      '- When countering: give a specific $ WITH a value-based reason',
+      '- 2-4 sentences MAX. Conversational not formal.',
+      '- Sign off with the store name',
+      'Seller bio: ' + bio,
+    ];
+    const userLines = [
+      'Item: ' + title,
+      'Condition: ' + condition,
+      desc ? 'Details: ' + desc : '',
+      'Asking: $' + (askPrice||'N/A'),
+      'Offer: ' + (offerNum>0 ? '$'+offerNum : 'No price - inquiry'),
+      'Message: "' + (message||'Interested.') + '"',
+      'Stance: ' + stance,
+      'Write the agent reply. Argue value, not price floor.',
+    ].filter(Boolean);
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer '+groqKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{role:'system',content:systemLines.join('\n')},{role:'user',content:userLines.join('\n')}],
+        temperature: 0.75, max_tokens: 200,
+      }),
+    });
+    if (!res.ok) throw new Error('groq '+res.status);
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content?.trim();
+    if (reply) { await sfSaveReply(offer?.id, reply); return reply; }
+  } catch(e) { console.warn('Groq:', e.message); }
+
+  // Rule-based fallback — still argues value
+  const reply = sfValueReply({ stance, buyerName, title, askPrice, offerNum, condition, storeName });
+  await sfSaveReply(offer?.id, reply);
+  return reply;
+}
+
+function sfValueReply({ stance, buyerName, title, askPrice, offerNum, condition, storeName }) {
+  const c92 = Math.round(askPrice * 0.92);
+  const c88 = Math.round(askPrice * 0.88);
+  const replies = {
+    inquiry:         'Hey '+buyerName+'! Thanks for your interest in '+title+' — it\'s '+condition+' condition, listed at $'+askPrice+'. Happy to answer questions. — '+storeName,
+    accept:          buyerName+', deal! $'+offerNum+' works for the '+title+'. Let\'s sort the details. — '+storeName,
+    light_counter:   'Hey '+buyerName+', appreciate the offer! The '+title+' is '+condition+' and priced right at $'+askPrice+' — these go for more used. I can do $'+c92+' to make it work, but that\'s about as far as I can stretch without losing on it. — '+storeName,
+    firm_counter:    'Hey '+buyerName+', I hear you — but the '+title+' is genuinely worth $'+askPrice+'. It\'s '+condition+' and would cost significantly more to replace. Best I can do is $'+c88+' — I\'d rather it go to someone who appreciates it. — '+storeName,
+    decline_counter: buyerName+', appreciate the reach-out but $'+offerNum+' is well below what the '+title+' is worth — it\'s '+condition+' and $'+askPrice+' is already fair. If you can do $'+c88+' I\'d consider it, but I\'m not in a rush. — '+storeName,
+  };
+  return replies[stance] || 'Hey '+buyerName+', thanks for reaching out about the '+title+'! Let\'s talk. — '+storeName;
+}
+
+async function sfSaveReply(offerId, reply) {
+  if (!offerId) return;
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const sb = createClient('https://sbwcjvdhacxkxbrckanv.supabase.co','sb_publishable_B19hwQ9hhcfx3-O6SAqxRw_TLslozqo');
+    await sb.from('negotiations').update({ agent_reply:reply, status:'replied', replied_at:new Date().toISOString() }).eq('id',offerId);
+  } catch(e) { console.warn('save reply:',e.message); }
+}
+
+function sfToast(msg, color, duration) {
+  const el = document.createElement('div');
+  Object.assign(el.style, {
+    position:'fixed', bottom:'80px', right:'16px', left:'16px', zIndex:'999',
+    background:color||'#16a34a', color:'#fff', padding:'14px 18px',
+    borderRadius:'16px', fontSize:'13px', fontWeight:'700', lineHeight:'1.5',
+    fontFamily:'Nunito,sans-serif', boxShadow:'0 8px 24px rgba(0,0,0,.3)', transition:'opacity .4s',
+  });
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; setTimeout(()=>el.remove(),400); }, duration||3500);
 }
 
 function sfShare(ch) {
